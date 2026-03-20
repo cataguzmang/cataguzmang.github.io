@@ -3,209 +3,279 @@
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>Cousiño-Macul NYC Accounts</title>
+<title>Cousiño-Macul · NYC Map</title>
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.css"/>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/leaflet/1.9.4/leaflet.min.js"></script>
 <style>
-  * { margin: 0; padding: 0; box-sizing: border-box; }
-  body { font-family: 'Segoe UI', sans-serif; background: #f5f5f5; color: #222; }
-  #header {
-    background: linear-gradient(135deg, #8B1A1A, #C0392B);
-    padding: 14px 24px;
-    display: flex;
-    align-items: center;
-    gap: 16px;
-    box-shadow: 0 2px 10px rgba(0,0,0,0.3);
-  }
-  #header h1 { font-size: 1.3rem; font-weight: 700; letter-spacing: 1px; color: white; }
-  #header p { font-size: 0.82rem; color: rgba(255,255,255,0.85); }
-  #stats {
-    display: flex;
-    gap: 8px;
-    padding: 8px 20px;
-    background: #efefef;
-    flex-wrap: wrap;
-    align-items: center;
-  }
-  .stat-label { font-size: 0.8rem; font-weight: 600; color: #555; margin-right: 4px; }
-  .stat-badge {
-    background: #ddd;
-    border: 1px solid #bbb;
-    border-radius: 20px;
-    padding: 4px 14px;
-    font-size: 0.8rem;
-    cursor: pointer;
-    transition: all 0.2s;
-    color: #333;
-  }
-  .stat-badge:hover { background: #c0392b; color: white; border-color: #c0392b; }
-  .stat-badge.active { background: #8B1A1A; color: white; border-color: #8B1A1A; }
-  #map { height: calc(100vh - 108px); }
-  .popup-name { font-weight: 700; font-size: 0.9rem; color: #8B1A1A; margin-bottom: 4px; }
-  .popup-addr { font-size: 0.82rem; color: #444; }
-  .popup-city {
-    font-size: 0.75rem;
-    display: inline-block;
-    padding: 2px 8px;
-    border-radius: 10px;
-    margin-top: 6px;
-    color: white;
-    font-weight: 600;
-  }
+  *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+  body { font-family: system-ui, -apple-system, sans-serif; height: 100vh; display: flex; flex-direction: column; overflow: hidden; background: #F8FAFC; }
+
+  #header { background: white; border-bottom: 1px solid #E2E8F0; padding: 0 20px; height: 50px; display: flex; align-items: center; gap: 12px; flex-shrink: 0; box-shadow: 0 1px 4px rgba(0,0,0,.07); }
+  #logo { font-size: 14px; font-weight: 800; color: #1E293B; white-space: nowrap; }
+  #logo span { color: #7C3AED; }
+
+  #filters { display: flex; align-items: center; gap: 7px; flex-wrap: wrap; }
+  .zone-btn { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; border: none; font-family: inherit; transition: all .15s; }
+  .zone-btn.active { box-shadow: 0 2px 8px rgba(0,0,0,.15); }
+
+  #toggles { display: flex; gap: 6px; margin-left: auto; align-items: center; }
+  .toggle-btn { padding: 4px 12px; border-radius: 20px; font-size: 11px; font-weight: 600; cursor: pointer; font-family: inherit; border: 1.5px solid; transition: all .15s; }
+  #visible { font-size: 11px; color: #94A3B8; white-space: nowrap; }
+  #visible strong { color: #1E293B; }
+
+  #map { flex: 1; }
+
+  /* Legend */
+  #legend { background: white; border: 1px solid #E2E8F0; border-radius: 10px; padding: 10px 14px; box-shadow: 0 2px 8px rgba(0,0,0,.09); font-size: 10px; pointer-events: none; line-height: 1; }
+  .leg-title { font-size: 8.5px; font-weight: 700; letter-spacing: .1em; text-transform: uppercase; color: #94A3B8; margin-bottom: 7px; }
+  .leg-row { display: flex; align-items: center; gap: 7px; margin-bottom: 5px; color: #374151; font-size: 10px; }
+  .leg-dot { width: 10px; height: 10px; border-radius: 50%; border: 2px solid white; flex-shrink: 0; }
+  .leg-hr { border: none; border-top: 1px solid #E2E8F0; margin: 7px 0; }
+
+  .leaflet-popup-content-wrapper { border-radius: 10px !important; box-shadow: 0 4px 20px rgba(0,0,0,.13) !important; }
+  .leaflet-popup-content { margin: 12px 14px !important; }
 </style>
 </head>
 <body>
+
 <div id="header">
-  <div>
-    <h1>🍷 Cousiño-Macul — NYC Accounts</h1>
-    <p>51 puntos de venta en New York City y alrededores</p>
+  <div id="logo">🍷 Cousiño-Macul · <span>Get Up</span> NYC</div>
+
+  <div id="filters">
+    <span style="font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:#94A3B8;">Zona:</span>
+    <button class="zone-btn active" data-zone="Todos"     style="background:#1E293B;color:white;">Todos (59)</button>
+    <button class="zone-btn"        data-zone="Manhattan" style="background:#FEE2E2;color:#991B1B;">Manhattan (38)</button>
+    <button class="zone-btn"        data-zone="Brooklyn"  style="background:#DBEAFE;color:#1D4ED8;">Brooklyn (11)</button>
+    <button class="zone-btn"        data-zone="Bronx"     style="background:#D1FAE5;color:#065F46;">The Bronx (4)</button>
+    <button class="zone-btn"        data-zone="Queens"    style="background:#FEF3C7;color:#92400E;">Queens (1)</button>
+  </div>
+
+  <div id="toggles">
+    <button class="toggle-btn" id="tw" style="background:#FEF3C7;border-color:#F59E0B;color:#92400E;">⭕ Winebow (51)</button>
+    <button class="toggle-btn" id="tg" style="background:#EDE9FE;border-color:#7C3AED;color:#5B21B6;">⭐ Get Up (8)</button>
+    <span id="visible"><strong>59</strong> visibles</span>
   </div>
 </div>
-<div id="stats">
-  <span class="stat-label">Filtrar:</span>
-  <span class="stat-badge active" data-city="ALL">Todos (51)</span>
-  <span class="stat-badge" data-city="NEW YORK">Manhattan / NY (35)</span>
-  <span class="stat-badge" data-city="BROOKLYN">Brooklyn (11)</span>
-  <span class="stat-badge" data-city="BRONX">Bronx (4)</span>
-  <span class="stat-badge" data-city="LONG ISLAND CITY">Long Island City (1)</span>
-</div>
+
 <div id="map"></div>
 
 <script>
-const accounts = [
-  // MANHATTAN / NEW YORK — verified NYC grid coordinates
-  { name: "RENAISSANCE FINE WINE & SPIRITS", city: "NEW YORK", address: "161 Freedom Pl", lat: 40.7747, lng: -73.9917 },
-  { name: "ALISON", city: "NEW YORK", address: "110 Saint Marks Pl", lat: 40.7280, lng: -73.9831 },
-  { name: "PJS LIQUOR WAREHOUSE", city: "NEW YORK", address: "4898 Broadway", lat: 40.8651, lng: -73.9288 },
-  { name: "WINERY THE", city: "NEW YORK", address: "257 W 116th St", lat: 40.8027, lng: -73.9541 },
-  { name: "EMPELLON", city: "NEW YORK", address: "230 W 4th St", lat: 40.7329, lng: -74.0030 },
-  { name: "FIRST AVENUE VINTNER", city: "NEW YORK", address: "984 1st Ave", lat: 40.7549, lng: -73.9634 },
-  { name: "WINEBOW NON RETAIL", city: "NEW YORK", address: "31 W 27th St", lat: 40.7454, lng: -73.9893 },
-  { name: "CAFE 53", city: "NEW YORK", address: "126 W 53rd St", lat: 40.7617, lng: -73.9830 },
-  { name: "ROSETTA WINES", city: "NEW YORK", address: "44 Exchange Pl", lat: 40.7061, lng: -74.0099 },
-  { name: "BEACON WINE & LIQUOR", city: "NEW YORK", address: "2120 Broadway", lat: 40.7863, lng: -73.9812 },
-  { name: "GARNETT WINES & LIQUOR", city: "NEW YORK", address: "929 Lexington Ave", lat: 40.7699, lng: -73.9641 },
-  { name: "VINES ON PINEHURST", city: "NEW YORK", address: "814 W 187th St", lat: 40.8495, lng: -73.9312 },
-  { name: "HARLEMITE RESTAURANT", city: "NEW YORK", address: "231 Lenox Ave", lat: 40.8070, lng: -73.9467 },
-  { name: "BOWERY & VINE", city: "NEW YORK", address: "269 Bowery", lat: 40.7228, lng: -73.9936 },
-  { name: "DR WINE", city: "NEW YORK", address: "1287 1st Ave", lat: 40.7663, lng: -73.9572 },
-  { name: "EMPELLON AL PASTOR", city: "NEW YORK", address: "132 Saint Marks Pl", lat: 40.7276, lng: -73.9826 },
-  { name: "GASTROMARKET", city: "NEW YORK", address: "315 10th Ave", lat: 40.7499, lng: -74.0044 },
-  { name: "GRAND CRU WINE & SPIRITS", city: "NEW YORK", address: "555 W 42nd St", lat: 40.7587, lng: -74.0037 },
-  { name: "LEONETTA", city: "NEW YORK", address: "181 Lexington Ave", lat: 40.7453, lng: -73.9836 },
-  { name: "SOHO WINES & SPIRITS", city: "NEW YORK", address: "461 W Broadway", lat: 40.7249, lng: -74.0003 },
-  { name: "WINE STORY", city: "NEW YORK", address: "1585 1st Ave", lat: 40.7728, lng: -73.9513 },
-  { name: "AMSTERWINE", city: "NEW YORK", address: "475 9th Ave", lat: 40.7536, lng: -73.9978 },
-  { name: "BALUCHIS MASALA", city: "NEW YORK", address: "60 Pearl St", lat: 40.7041, lng: -74.0104 },
-  { name: "INDIAN SUMMER", city: "NEW YORK", address: "239 Malcolm X Blvd", lat: 40.8073, lng: -73.9453 },
-  { name: "KATSUHAMA RESTAURANT", city: "NEW YORK", address: "11 E 47th St", lat: 40.7565, lng: -73.9789 },
-  { name: "KEENS STEAKHOUSE", city: "NEW YORK", address: "72 W 36th St", lat: 40.7505, lng: -73.9883 },
-  { name: "FOOD IN MOTION", city: "NEW YORK", address: "214 Sullivan St", lat: 40.7287, lng: -74.0007 },
-  { name: "MISTER WRIGHT FINE WINES", city: "NEW YORK", address: "1593 3rd Ave", lat: 40.7808, lng: -73.9524 },
-  { name: "MORTON WILLIAMS WINES & SPIRITS", city: "NEW YORK", address: "1219 Madison Ave", lat: 40.7838, lng: -73.9553 },
-  { name: "ONA", city: "NEW YORK", address: "1685 Lexington Ave", lat: 40.7933, lng: -73.9455 },
-  { name: "PARK AVENUE LIQUORS", city: "NEW YORK", address: "292 Madison Ave", lat: 40.7530, lng: -73.9837 },
-  { name: "ROBERT RESTAURANT", city: "NEW YORK", address: "2 Columbus Cir", lat: 40.7682, lng: -73.9819 },
-  { name: "ARTESANO", city: "NEW YORK", address: "90 Chambers St", lat: 40.7138, lng: -74.0087 },
-  { name: "67 WINE & SPIRITS", city: "NEW YORK", address: "179 Columbus Ave", lat: 40.7726, lng: -73.9835 },
-  { name: "ABSOLUT SPIRITS COMPANY", city: "NEW YORK", address: "401 Park Ave S", lat: 40.7441, lng: -73.9835 },
+const BORO = {
+  Manhattan: { dot:"#DC2626", fill:"#FEE2E2", label:"#991B1B" },
+  Brooklyn:  { dot:"#2563EB", fill:"#DBEAFE", label:"#1D4ED8" },
+  Bronx:     { dot:"#059669", fill:"#D1FAE5", label:"#065F46" },
+  Queens:    { dot:"#D97706", fill:"#FEF3C7", label:"#92400E" },
+};
 
-  // BROOKLYN — verified coordinates
-  { name: "PALO SANTO", city: "BROOKLYN", address: "652 Union St", lat: 40.6743, lng: -73.9853 },
-  { name: "CAESARS WINES & LIQUORS", city: "BROOKLYN", address: "6715 Bay Pkwy", lat: 40.6044, lng: -74.0002 },
-  { name: "DIRTY PRECIOUS LLC", city: "BROOKLYN", address: "317 3rd Ave", lat: 40.6598, lng: -73.9838 },
-  { name: "MEICHI NA LIQUOR", city: "BROOKLYN", address: "391 Flatbush Ave", lat: 40.6827, lng: -73.9728 },
-  { name: "YOUNG ETHELS", city: "BROOKLYN", address: "506 5th Ave", lat: 40.6601, lng: -73.9807 },
-  { name: "TIPSY", city: "BROOKLYN", address: "584 Myrtle Ave", lat: 40.6943, lng: -73.9695 },
-  { name: "VIN DE TABLE", city: "BROOKLYN", address: "832 DeKalb Ave", lat: 40.6916, lng: -73.9436 },
-  { name: "GARRYS WINE & LIQUOR", city: "BROOKLYN", address: "231 Flatbush Ave", lat: 40.6829, lng: -73.9730 },
-  { name: "HEIGHTS CHATEAU", city: "BROOKLYN", address: "123 Atlantic Ave", lat: 40.6903, lng: -73.9959 },
-  { name: "IL VIGNETTO", city: "BROOKLYN", address: "145 Union St", lat: 40.6793, lng: -73.9975 },
-  { name: "COULEUR CAFE", city: "BROOKLYN", address: "435 7th Ave", lat: 40.6614, lng: -73.9819 },
-
-  // BRONX — verified coordinates
-  { name: "GUN HILL LIQUOR WAREHOUSE", city: "BRONX", address: "5790 Broadway", lat: 40.8818, lng: -73.8956 },
-  { name: "MMJ WINES & SPIRITS", city: "BRONX", address: "4251 Katonah Ave", lat: 40.8887, lng: -73.8710 },
-  { name: "RIVERDALE VINTNER", city: "BRONX", address: "549 W 235th St", lat: 40.8977, lng: -73.9164 },
-  { name: "LIQUOR LAND", city: "BRONX", address: "930 E 233rd St", lat: 40.8988, lng: -73.8471 },
-
-  // LONG ISLAND CITY
-  { name: "BLUE STREAK WINES & SPIRITS", city: "LONG ISLAND CITY", address: "4720 Center Blvd", lat: 40.7506, lng: -73.9562 },
+const STAGES = [
+  { label:"Prospecto",       icon:"🎯", color:"#64748B", bg:"#F8FAFC" },
+  { label:"Primer Contacto", icon:"📞", color:"#D97706", bg:"#FFFBEB" },
+  { label:"Presentación",    icon:"🍷", color:"#7C3AED", bg:"#F5F3FF" },
+  { label:"Seguimiento",     icon:"🔁", color:"#0369A1", bg:"#F0F9FF" },
+  { label:"Cerrado ✓",       icon:"✅", color:"#15803D", bg:"#F0FDF4" },
 ];
 
-const cityColors = {
-  "NEW YORK":         "#c0392b",
-  "BROOKLYN":         "#2980b9",
-  "BRONX":            "#27ae60",
-  "LONG ISLAND CITY": "#e67e22"
-};
+const WINEBOW = [
+  { name:"Renaissance Fine Wine & Spirits", addr:"161 Freedom Pl",      city:"Manhattan", lat:40.7753, lng:-73.9916 },
+  { name:"Blue Streak Wines & Spirits",     addr:"4720 Center Blvd",     city:"Queens",    lat:40.7468, lng:-73.9543 },
+  { name:"Alison",                          addr:"110 Saint Marks Pl",   city:"Manhattan", lat:40.7278, lng:-73.9857 },
+  { name:"PJs Liquor Warehouse",            addr:"4898 Broadway",        city:"Manhattan", lat:40.8680, lng:-73.9274 },
+  { name:"Winery The",                      addr:"257 W 116th St",       city:"Manhattan", lat:40.8021, lng:-73.9536 },
+  { name:"Empellon",                        addr:"230 W 4th St",         city:"Manhattan", lat:40.7317, lng:-74.0033 },
+  { name:"First Avenue Vintner",            addr:"984 1st Ave",          city:"Manhattan", lat:40.7561, lng:-73.9652 },
+  { name:"Gun Hill Liquor Warehouse",       addr:"5790 Broadway",        city:"Bronx",     lat:40.8888, lng:-73.8977 },
+  { name:"MMJ Wines & Spirits",             addr:"4251 Katonah Ave",     city:"Bronx",     lat:40.8776, lng:-73.8668 },
+  { name:"Winebow Non Retail",              addr:"31 W 27th St",         city:"Manhattan", lat:40.7459, lng:-73.9894 },
+  { name:"Cafe 53",                         addr:"126 W 53rd St",        city:"Manhattan", lat:40.7626, lng:-73.9845 },
+  { name:"Palo Santo",                      addr:"652 Union St",         city:"Brooklyn",  lat:40.6764, lng:-73.9765 },
+  { name:"Rosetta Wines",                   addr:"44 Exchange Pl",       city:"Manhattan", lat:40.7054, lng:-74.0113 },
+  { name:"Beacon Wine & Liquor",            addr:"2120 Broadway",        city:"Manhattan", lat:40.7844, lng:-73.9814 },
+  { name:"Caesars Wines & Liquors",         addr:"6715 Bay Pkwy",        city:"Brooklyn",  lat:40.6143, lng:-73.9988 },
+  { name:"Dirty Precious LLC",              addr:"317 3rd Ave",          city:"Brooklyn",  lat:40.6710, lng:-73.9840 },
+  { name:"Garnett Wines & Liquor",          addr:"929 Lexington Ave",    city:"Manhattan", lat:40.7707, lng:-73.9643 },
+  { name:"Riverdale Vintner",               addr:"549 W 235th St",       city:"Bronx",     lat:40.8993, lng:-73.9120 },
+  { name:"Vines on Pinehurst",              addr:"814 W 187th St",       city:"Manhattan", lat:40.8517, lng:-73.9313 },
+  { name:"Harlemite Restaurant",            addr:"231 Lenox Ave",        city:"Manhattan", lat:40.8014, lng:-73.9484 },
+  { name:"Meichi Na Liquor",                addr:"391 Flatbush Ave",     city:"Brooklyn",  lat:40.6749, lng:-73.9763 },
+  { name:"Young Ethels",                    addr:"506 5th Ave",          city:"Brooklyn",  lat:40.6597, lng:-73.9797 },
+  { name:"Bowery & Vine",                   addr:"269 Bowery",           city:"Manhattan", lat:40.7235, lng:-73.9933 },
+  { name:"Dr Wine",                         addr:"1287 1st Ave",         city:"Manhattan", lat:40.7648, lng:-73.9565 },
+  { name:"Empellon Al Pastor",              addr:"132 Saint Marks Pl",   city:"Manhattan", lat:40.7282, lng:-73.9840 },
+  { name:"Gastromarket",                    addr:"315 10th Ave",         city:"Manhattan", lat:40.7499, lng:-74.0023 },
+  { name:"Grand Cru Wine & Spirits",        addr:"555 W 42nd St",        city:"Manhattan", lat:40.7582, lng:-74.0002 },
+  { name:"Leonetta",                        addr:"181 Lexington Ave",    city:"Manhattan", lat:40.7427, lng:-73.9856 },
+  { name:"Liquor Land",                     addr:"930 East 233rd St",    city:"Bronx",     lat:40.8946, lng:-73.8594 },
+  { name:"SoHo Wines & Spirits",            addr:"461 W Broadway",       city:"Manhattan", lat:40.7250, lng:-74.0007 },
+  { name:"Wine Story",                      addr:"1585 1st Ave",         city:"Manhattan", lat:40.7690, lng:-73.9554 },
+  { name:"Amsterwine",                      addr:"475 9th Ave",          city:"Manhattan", lat:40.7534, lng:-74.0002 },
+  { name:"Baluchis Masala",                 addr:"60 Pearl St",          city:"Manhattan", lat:40.7041, lng:-74.0131 },
+  { name:"Indian Summer",                   addr:"239 Malcolm X Blvd",   city:"Manhattan", lat:40.8057, lng:-73.9473 },
+  { name:"Katsuhama Restaurant",            addr:"11 E 47th St",         city:"Manhattan", lat:40.7575, lng:-73.9776 },
+  { name:"Keens Steakhouse",                addr:"72 W 36th St",         city:"Manhattan", lat:40.7499, lng:-73.9880 },
+  { name:"Tipsy",                           addr:"584 Myrtle Ave",       city:"Brooklyn",  lat:40.6959, lng:-73.9651 },
+  { name:"Vin de Table",                    addr:"832 DeKalb Ave",       city:"Brooklyn",  lat:40.6914, lng:-73.9452 },
+  { name:"Food in Motion",                  addr:"214 Sullivan St",      city:"Manhattan", lat:40.7283, lng:-74.0003 },
+  { name:"Garrys Wine & Liquor",            addr:"231 Flatbush Ave",     city:"Brooklyn",  lat:40.6849, lng:-73.9783 },
+  { name:"Heights Chateau",                 addr:"123 Atlantic Ave",     city:"Brooklyn",  lat:40.6902, lng:-73.9955 },
+  { name:"Mister Wright Fine Wines",        addr:"1593 3rd Ave",         city:"Manhattan", lat:40.7847, lng:-73.9531 },
+  { name:"Morton Williams Wines",           addr:"1219 Madison Ave",     city:"Manhattan", lat:40.7870, lng:-73.9566 },
+  { name:"Ona",                             addr:"1685 Lexington Ave",   city:"Manhattan", lat:40.7886, lng:-73.9466 },
+  { name:"Park Avenue Liquors",             addr:"292 Madison Ave",      city:"Manhattan", lat:40.7503, lng:-73.9836 },
+  { name:"Il Vignetto",                     addr:"145 Union St",         city:"Brooklyn",  lat:40.6815, lng:-73.9998 },
+  { name:"Robert Restaurant",               addr:"2 Columbus Cir",       city:"Manhattan", lat:40.7683, lng:-73.9822 },
+  { name:"Artesano",                        addr:"90 Chambers St",       city:"Manhattan", lat:40.7138, lng:-74.0079 },
+  { name:"67 Wine & Spirits",               addr:"179 Columbus Ave",     city:"Manhattan", lat:40.7762, lng:-73.9818 },
+  { name:"Absolut Spirits Company",         addr:"401 Park Ave S",       city:"Manhattan", lat:40.7448, lng:-73.9832 },
+  { name:"Couleur Cafe",                    addr:"435 7th Ave",          city:"Brooklyn",  lat:40.6631, lng:-73.9799 },
+];
 
-const cityLabels = {
-  "NEW YORK":         "Manhattan / NY",
-  "BROOKLYN":         "Brooklyn",
-  "BRONX":            "Bronx",
-  "LONG ISLAND CITY": "Long Island City"
-};
+const GETUP = [
+  { id:0, name:"Hell's Kitchen Wines & Spirits", addr:"408 W 55th St",        city:"Manhattan", lat:40.7657, lng:-73.9901, type:"retail",     stage:0 },
+  { id:1, name:"Shon 45 Wine & Spirits",          addr:"840 8th Ave",          city:"Manhattan", lat:40.7637, lng:-73.9867, type:"retail",     stage:0 },
+  { id:2, name:"Liberty Fine Wines & Spirits",    addr:"706 9th Ave",          city:"Manhattan", lat:40.7632, lng:-73.9896, type:"retail",     stage:0 },
+  { id:3, name:"Penn Cellars",                    addr:"1 Pennsylvania Plaza", city:"Manhattan", lat:40.7506, lng:-73.9937, type:"retail",     stage:0 },
+  { id:4, name:"NuyoRes Restaurant",              addr:"154 W 13th St",        city:"Manhattan", lat:40.7371, lng:-74.0000, type:"restaurant", stage:0 },
+  { id:5, name:"Restaurant Rosso",                addr:"127 E 7th St",         city:"Manhattan", lat:40.7262, lng:-73.9831, type:"restaurant", stage:0 },
+  { id:6, name:"Central Perk",                    addr:"1420 6th Ave",         city:"Manhattan", lat:40.7668, lng:-73.9793, type:"restaurant", stage:0 },
+  { id:7, name:"55th St Wine & Spirits",          addr:"50 W 55th St",         city:"Manhattan", lat:40.7621, lng:-73.9776, type:"retail",     stage:0 },
+];
 
-function makeIcon(city) {
-  const color = cityColors[city] || "#888";
+// ── State ──────────────────────────────────────────────────────
+let zone = "Todos", showW = true, showG = true;
+let markers = [];
+
+// ── Map init ───────────────────────────────────────────────────
+const map = L.map("map", { center:[40.730,-73.980], zoom:12 });
+L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+  attribution:'© <a href="https://openstreetmap.org">OpenStreetMap</a>', maxZoom:19
+}).addTo(map);
+
+// Legend control
+const legend = L.control({ position:"bottomleft" });
+legend.onAdd = () => {
+  const d = L.DomUtil.create("div","");
+  d.id = "legend";
+  d.innerHTML = `
+    <div class="leg-title">Winebow activos</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#DC2626;box-shadow:0 0 0 1px #DC2626"></div>Manhattan</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#2563EB;box-shadow:0 0 0 1px #2563EB"></div>Brooklyn</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#059669;box-shadow:0 0 0 1px #059669"></div>The Bronx</div>
+    <div class="leg-row"><div class="leg-dot" style="background:#D97706;box-shadow:0 0 0 1px #D97706"></div>Queens</div>
+    <div class="leg-hr"></div>
+    <div class="leg-title">Get Up · En desarrollo</div>
+    <div class="leg-row">
+      <svg width="14" height="14" viewBox="0 0 22 22" style="flex-shrink:0">
+        <polygon points="11,1 13.9,7.6 21,8.6 16,13.4 17.2,20.5 11,17 4.8,20.5 6,13.4 1,8.6 8.1,7.6" fill="#7C3AED" stroke="white" stroke-width="1.8"/>
+      </svg>
+      Get Up (8)
+    </div>`;
+  return d;
+};
+legend.addTo(map);
+
+// ── Icons ──────────────────────────────────────────────────────
+function dotIcon(color) {
   return L.divIcon({
-    className: '',
-    html: `<div style="width:15px;height:15px;background:${color};border:2.5px solid white;border-radius:50%;box-shadow:0 1px 5px rgba(0,0,0,0.5)"></div>`,
-    iconSize: [15, 15],
-    iconAnchor: [7, 7],
-    popupAnchor: [0, -10]
+    className:"",
+    html:`<div style="width:13px;height:13px;border-radius:50%;background:${color};border:2.5px solid white;box-shadow:0 1px 6px rgba(0,0,0,.4);"></div>`,
+    iconSize:[13,13], iconAnchor:[6.5,6.5], popupAnchor:[0,-9]
+  });
+}
+function starIcon() {
+  return L.divIcon({
+    className:"",
+    html:`<svg width="20" height="20" viewBox="0 0 22 22"><polygon points="11,1 13.9,7.6 21,8.6 16,13.4 17.2,20.5 11,17 4.8,20.5 6,13.4 1,8.6 8.1,7.6" fill="#7C3AED" stroke="white" stroke-width="1.8"/></svg>`,
+    iconSize:[20,20], iconAnchor:[10,10], popupAnchor:[0,-12]
   });
 }
 
-const map = L.map('map').setView([40.730, -73.970], 12);
+// ── Popup HTML ─────────────────────────────────────────────────
+function winebowPopup(c) {
+  const col = BORO[c.city] || { fill:"#F1F5F9", label:"#374151" };
+  return `<div style="font-family:system-ui,sans-serif;min-width:180px;">
+    <div style="font-weight:700;font-size:13px;color:#1E293B;margin-bottom:3px;line-height:1.3;">${c.name}</div>
+    <div style="font-size:11px;color:#94A3B8;margin-bottom:8px;">📍 ${c.addr}</div>
+    <span style="padding:2px 9px;border-radius:7px;font-size:10px;font-weight:700;background:${col.fill};color:${col.label};">${c.city}</span>
+  </div>`;
+}
 
-L.tileLayer('https://tile.openstreetmap.org/{z}/{x}/{y}.png', {
-  attribution: '© <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
-  maxZoom: 19
-}).addTo(map);
+function getupPopup(c) {
+  const st = STAGES[c.stage];
+  const typeBg    = c.type==="restaurant" ? "#FEF3C7" : "#F0F9FF";
+  const typeColor = c.type==="restaurant" ? "#92400E"  : "#0369A1";
+  const typeLabel = c.type==="restaurant" ? "🍽 Restaurant" : "🍾 Retail";
+  return `<div style="font-family:system-ui,sans-serif;min-width:190px;">
+    <div style="font-weight:700;font-size:13px;color:#1E293B;margin-bottom:3px;line-height:1.3;">${c.name}</div>
+    <div style="font-size:11px;color:#94A3B8;margin-bottom:9px;">📍 ${c.addr}</div>
+    <div style="display:flex;flex-wrap:wrap;gap:5px;">
+      <span style="padding:2px 9px;border-radius:7px;font-size:10px;font-weight:700;background:#EDE9FE;color:#5B21B6;">⭐ Get Up</span>
+      <span style="padding:2px 9px;border-radius:7px;font-size:10px;font-weight:600;background:${st.bg};color:${st.color};">${st.icon} ${st.label}</span>
+      <span style="padding:2px 9px;border-radius:7px;font-size:10px;font-weight:600;background:${typeBg};color:${typeColor};">${typeLabel}</span>
+    </div>
+  </div>`;
+}
 
-let markers = [];
+// ── Render ─────────────────────────────────────────────────────
+function render() {
+  markers.forEach(m => m.remove());
+  markers = [];
 
-accounts.forEach(a => {
-  const color = cityColors[a.city] || "#888";
-  const marker = L.marker([a.lat, a.lng], { icon: makeIcon(a.city) })
-    .bindPopup(`
-      <div class="popup-name">${a.name}</div>
-      <div class="popup-addr">📍 ${a.address}</div>
-      <span class="popup-city" style="background:${color}">${cityLabels[a.city] || a.city}</span>
-    `);
-  marker.cityData = a.city;
-  marker.addTo(map);
-  markers.push(marker);
-});
+  let count = 0;
 
-document.querySelectorAll('.stat-badge').forEach(btn => {
-  btn.addEventListener('click', function() {
-    document.querySelectorAll('.stat-badge').forEach(b => b.classList.remove('active'));
-    this.classList.add('active');
-    const city = this.dataset.city;
-    markers.forEach(m => {
-      if (city === 'ALL' || m.cityData === city) {
-        m.addTo(map);
-      } else {
-        map.removeLayer(m);
-      }
+  if (showW) {
+    WINEBOW.forEach(c => {
+      if (zone !== "Todos" && c.city !== zone) return;
+      const m = L.marker([c.lat,c.lng], { icon: dotIcon(BORO[c.city]?.dot||"#64748B") });
+      m.bindPopup(winebowPopup(c), { maxWidth:240 });
+      m.addTo(map); markers.push(m); count++;
     });
+  }
+
+  if (showG) {
+    GETUP.forEach(c => {
+      if (zone !== "Todos" && c.city !== zone) return;
+      const m = L.marker([c.lat,c.lng], { icon: starIcon() });
+      m.bindPopup(getupPopup(c), { maxWidth:240 });
+      m.addTo(map); markers.push(m); count++;
+    });
+  }
+
+  document.getElementById("visible").innerHTML = `<strong>${count}</strong> visibles`;
+}
+
+// ── Zone filter buttons ────────────────────────────────────────
+document.querySelectorAll(".zone-btn").forEach(btn => {
+  btn.addEventListener("click", () => {
+    zone = btn.dataset.zone;
+    document.querySelectorAll(".zone-btn").forEach(b => {
+      b.classList.remove("active");
+      b.style.boxShadow = "none";
+      b.style.opacity   = "1";
+    });
+    btn.classList.add("active");
+    btn.style.boxShadow = "0 2px 8px rgba(0,0,0,.18)";
+    render();
   });
 });
 
-const legend = L.control({ position: 'bottomright' });
-legend.onAdd = () => {
-  const div = L.DomUtil.create('div');
-  div.style.cssText = 'background:white;padding:10px 14px;border-radius:8px;border:1px solid #ccc;font-size:12px;color:#333;box-shadow:0 2px 8px rgba(0,0,0,0.2);line-height:1.9;';
-  div.innerHTML = '<strong style="display:block;margin-bottom:4px;color:#8B1A1A">🍷 Cousiño-Macul</strong>' +
-    Object.entries(cityColors).map(([city, color]) =>
-      `<div><span style="display:inline-block;width:12px;height:12px;background:${color};border-radius:50%;margin-right:6px;border:2px solid white;box-shadow:0 0 2px rgba(0,0,0,0.3)"></span>${cityLabels[city]}</div>`
-    ).join('');
-  return div;
-};
-legend.addTo(map);
+// ── Toggle buttons ─────────────────────────────────────────────
+document.getElementById("tw").addEventListener("click", function() {
+  showW = !showW;
+  this.style.background   = showW ? "#FEF3C7" : "#F8FAFC";
+  this.style.borderColor  = showW ? "#F59E0B" : "#E2E8F0";
+  this.style.color        = showW ? "#92400E"  : "#CBD5E1";
+  render();
+});
+
+document.getElementById("tg").addEventListener("click", function() {
+  showG = !showG;
+  this.style.background  = showG ? "#EDE9FE" : "#F8FAFC";
+  this.style.borderColor = showG ? "#7C3AED" : "#E2E8F0";
+  this.style.color       = showG ? "#5B21B6"  : "#CBD5E1";
+  render();
+});
+
+render();
 </script>
 </body>
 </html>
