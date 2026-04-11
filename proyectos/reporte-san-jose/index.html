@@ -244,27 +244,7 @@ body{background:var(--bg);color:var(--text);font-family:'DM Sans',sans-serif;fon
         <div class="pt">Revenue &amp; volumen por SKU</div>
         <div class="cw" style="height:150px;"><canvas id="cProducts"></canvas></div>
       </div>
-      <div class="panel" style="display:flex;flex-direction:column;gap:10px;justify-content:center;">
-        <div style="background:rgba(37,99,235,.04);border:1px solid rgba(37,99,235,.15);border-radius:8px;padding:14px 16px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:13px;font-weight:500;">Jack Mackerel in Brine</span><span class="badge bok">Core SKU</span></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:11px;">
-            <div><div style="color:var(--muted)">Revenue</div><div class="num" style="font-size:15px;font-weight:500;">$21,090</div></div>
-            <div><div style="color:var(--muted)">Cajas</div><div class="num" style="font-size:15px;font-weight:500;">590</div></div>
-            <div><div style="color:var(--muted)">% Promo</div><div class="num" style="font-size:15px;font-weight:500;color:var(--promo)">24.2%</div></div>
-          </div>
-          <div class="pbar-bg"><div class="pbar" style="width:97%;background:var(--fl)"></div></div>
-        </div>
-        <div style="background:rgba(217,119,6,.04);border:1px solid rgba(217,119,6,.2);border-radius:8px;padding:14px 16px;">
-          <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:13px;font-weight:500;">Jack Mackerel Tomato Sauce</span><span class="badge bnew">Nuevo SKU</span></div>
-          <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:11px;">
-            <div><div style="color:var(--muted)">Revenue</div><div class="num" style="font-size:15px;font-weight:500;">$638</div></div>
-            <div><div style="color:var(--muted)">Cajas</div><div class="num" style="font-size:15px;font-weight:500;">20</div></div>
-            <div><div style="color:var(--muted)">% Promo</div><div class="num" style="font-size:15px;font-weight:500;color:var(--promo)">30%</div></div>
-          </div>
-          <div style="font-size:10px;color:var(--muted);margin-top:8px;">Incorporado Mar 2026 — datos iniciales</div>
-          <div class="pbar-bg"><div class="pbar" style="width:3%;background:#d97706"></div></div>
-        </div>
-      </div>
+      <div class="panel" id="productCardsPanel" style="display:flex;flex-direction:column;gap:10px;justify-content:center;"></div>
     </div>
   </div>
 
@@ -373,10 +353,7 @@ const MONTHS=['Oct 25','Nov 25','Dic 25','Ene 26','Feb 26','Mar 26'];
 const PAIRS=[[5,4],[4,3],[3,2],[2,1]];
 const PLBLS=[['Marzo 2026','Febrero 2026'],['Febrero 2026','Enero 2026'],['Enero 2026','Dic 2025'],['Dic 2025','Nov 2025']];
 
-const D={
-  fl:{rev:[2736,3055.2,1865.04,1185.6,3192,3602.4],cajas:[78,81,57,25,94,110],pv:[866.4,638.4,729.6,273.6,1231.2,1550.4],pc:[19,14,16,6,27,34],ord:[16,8,6,7,12,13]},
-  ny:{rev:[0,0,501.6,2936.64,2015.52,638.4],cajas:[0,0,15,73,57,20],pv:[0,0,182.4,501.6,547.2,273.6],pc:[0,0,4,11,12,6],ord:[0,0,2,32,11,2]}
-};
+const D={"fl":{"rev":[2736.0,3055.2,1865.04,1185.6,3192.0,3602.4],"cajas":[78,81,57,25,94,110],"pv":[866.4,638.4,684.0,273.6,1231.2,1550.4],"pc":[19,14,15,6,27,34],"ord":[16,8,6,7,12,13]},"ny":{"rev":[0.0,0.0,501.6,2936.64,2015.52,638.4],"cajas":[0,0,15,73,57,20],"pv":[0.0,0.0,182.4,501.6,547.2,273.6],"pc":[0,0,4,11,12,6],"ord":[0,0,2,32,11,2]}};
 const A={
   rev:D.fl.rev.map((v,i)=>v+D.ny.rev[i]),
   cajas:D.fl.cajas.map((v,i)=>v+D.ny.cajas[i]),
@@ -400,14 +377,24 @@ function dcI(v){return v===null?'d0':v>=0?'dpp':'dnn';}
 
 function getS(arr,m){return m===-1?arr.reduce((a,b)=>a+b,0):arr[m];}
 
-// ======== GENERAL ========
-let selM=-1, genBuilt=false;
 
-function smHTML(sd,m,col){
-  const r=getS(sd.rev,m),c=getS(sd.cajas,m),pc=getS(sd.pc,m),pv=getS(sd.pv,m),o=getS(sd.ord,m);
-  const pp=c>0?pc/c*100:0, roi=pv>0?r/pv:0, rpc=c>0?r/c:0;
-  return`<div class="sm"><div class="sm-lbl">Revenue</div><div class="sm-val" style="color:var(${col})">${f$(r)}</div><div class="sm-sub">${o} pedidos</div></div>
-<div class="sm"><div class="sm-lbl">Cajas</div><div class="sm-val">${fN(c)}</div><div class="sm-sub">Rev/caja ${f$(rpc)}</div></div>
+// ======== GENERAL ========
+const GENERAL_DATA={"ALL":{"summary":{"rev":21728.4,"cajas":610,"pc":148,"pv":6748.8,"ord":109,"avg_price":47.03},"states":{"Florida":{"rev":15636.24,"cajas":445,"pc":115,"pv":5244.0,"ord":62},"Nueva York":{"rev":6092.16,"cajas":165,"pc":33,"pv":1504.8,"ord":47}},"customerChart":[{"n":"Key Food Supermarket Lauderhill","v":4560.0,"s":"fl"},{"n":"Aries Supermarket","v":2234.4,"s":"fl"},{"n":"Key Food 10400","v":957.6,"s":"fl"},{"n":"Key Food Supermarket Sabal","v":957.6,"s":"fl"},{"n":"Jibarito Ideal Food Basket","v":957.6,"s":"fl"},{"n":"Food Fair - Broward Blvd","v":816.24,"s":"fl"},{"n":"Market Fresh - Middletown","v":501.6,"s":"ny"},{"n":"Festival Supermarket # 5","v":501.6,"s":"fl"},{"n":"Bravo Supermarket - Hempstead","v":401.28,"s":"ny"},{"n":"Key Food Hillsboro Coconut Creek","v":364.8,"s":"fl"}],"salesChart":[{"n":"Alexandra J","v":8385.84},{"n":"Emily Rivas","v":2781.6},{"n":"Luis Soler","v":2471.52},{"n":"Andrea P","v":2052.0},{"n":"Katherine Osorio Duque","v":1860.48},{"n":"Gustavo Ochoa","v":1368.0},{"n":"Diana Angel","v":1076.16},{"n":"Angela Q","v":729.6},{"n":"Mireya Fernandez","v":364.8},{"n":"Paula Escobar","v":319.2}],"customerTable":[{"name":"Key Food Supermarket Lauderhill","state":"Florida","revenue":4560.0,"cajas":133,"promo_qty":33,"promo_pct":24.8},{"name":"Aries Supermarket","state":"Florida","revenue":2234.4,"cajas":70,"promo_qty":21,"promo_pct":30.0},{"name":"Key Food 10400","state":"Florida","revenue":957.6,"cajas":30,"promo_qty":9,"promo_pct":30.0},{"name":"Key Food Supermarket Sabal","state":"Florida","revenue":957.6,"cajas":30,"promo_qty":9,"promo_pct":30.0},{"name":"Jibarito Ideal Food Basket","state":"Florida","revenue":957.6,"cajas":20,"promo_qty":6,"promo_pct":30.0},{"name":"Food Fair - Broward Blvd","state":"Florida","revenue":816.24,"cajas":21,"promo_qty":6,"promo_pct":28.6},{"name":"Market Fresh - Middletown","state":"Nueva York","revenue":501.6,"cajas":15,"promo_qty":4,"promo_pct":26.7},{"name":"Festival Supermarket # 5","state":"Florida","revenue":501.6,"cajas":11,"promo_qty":3,"promo_pct":27.3},{"name":"Bravo Supermarket - Hempstead","state":"Nueva York","revenue":401.28,"cajas":9,"promo_qty":0,"promo_pct":0.0},{"name":"Key Food Hillsboro Coconut Creek","state":"Florida","revenue":364.8,"cajas":10,"promo_qty":1,"promo_pct":10.0},{"name":"Price Choice Super # 7","state":"Florida","revenue":364.8,"cajas":10,"promo_qty":2,"promo_pct":20.0},{"name":"Bravo Supermarket - Pembroke","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"C town Poconos","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"C-Town / Allentown","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Food Star Supermarket","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Fruit Tree Farm Inc.","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Gala Fresh Farms","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Gala Fresh Farms - Boca Raton","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Homestead Market DBA Mango Tree Homestead","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key Food  ( Dade City)","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key Food Marketplace - 5015 Roosevelt","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key food supermarket","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Nacional Supermarket","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Super compare fresh","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"The Golden Mango","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Total Supermarket 2","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Trade Fair # 8","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Ideal food basket Port Saint Lucie","state":"Florida","revenue":228.0,"cajas":6,"promo_qty":1,"promo_pct":16.7},{"name":"CTown Supermarket New Britain","state":"Nueva York","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"Key Food (Cape Coral)","state":"Florida","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"Mango Tree Homestead","state":"Florida","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"Market Fresh - Newburgh","state":"Nueva York","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"SABORES CHILENOS, CORP.","state":"Florida","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"El Aguila Supermarket","state":"Florida","revenue":182.4,"cajas":4,"promo_qty":0,"promo_pct":0.0},{"name":"Seabra Food Hunters Creek","state":"Florida","revenue":136.8,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Bravo Supermarket Easton PA","state":"Nueva York","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"El Mercado Lakewood LLC DBA Brothers Grocery & Deli","state":"Nueva York","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Fine Fare - Westbury","state":"Nueva York","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Food Bazaar # 35 - Trenton","state":"Nueva York","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Food Bazaar # 36 Sylvan Ave","state":"Nueva York","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Food universal orange","state":"Nueva York","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Superior Meat & Fish Hollywood","state":"Florida","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Gala Food - Brdgprt","state":"Nueva York","revenue":91.2,"cajas":0,"promo_qty":0,"promo_pct":0.0},{"name":"City Fresh Market - College Point","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Food Bazaar # 40-Mount Vernon","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Ideal Spmkt - Jamaica","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Key Food - Norwalk","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Trade Fair No 09","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Universal Food Market","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Associated ( Met Fresh ) Woodside","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Bravo Spmkt-90th St","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"C-Town-New Rochelle","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"CTown Supermarket 81-02","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Carniceria La Palma","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Carniceria Risaralda","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"EL MANGO RICO MARKET INC.","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Eat Fresh Super Market","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Fine Fare - Farmingville","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Food Mex PA","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Ideal Food Basket of Dania Beach","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Ideal Food Deerfield beach","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Key Food Super - Hollywood","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Kwang Hang c-town","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"La Chiquita Kissimmee Produce","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"La Llave Supermarket Miami Lakes","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Mencho Supermarket","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Mi Tierra Spmkt-86","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"OC Shoe Repair","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"PERIKLES GROUP INC","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Portofino Fresh Market","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Price Choice Foodmarket #11","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Sabor Tropical #1","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Super Fresh - Springfield Blvd","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Superfresh Market -Highland Park","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Tienda Quetzal #1 Bonita","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Trade Fair # 6","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Trade Fair No 11","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Fine Fare Fresh (Pionner Supermarket)","state":"Nueva York","revenue":45.6,"cajas":0,"promo_qty":0,"promo_pct":0.0}],"productsCards":[{"name":"Jack Mackerel in Brine","revenue":21090.0,"cajas":590,"promo_pct":24.1},{"name":"Jack Mackerel in Tomato Sauce","revenue":638.4,"cajas":20,"promo_pct":30.0}]},"Oct 25":{"summary":{"rev":2736.0,"cajas":78,"pc":19,"pv":866.4,"ord":16,"avg_price":46.37},"states":{"Florida":{"rev":2736.0,"cajas":78,"pc":19,"pv":866.4,"ord":16},"Nueva York":{"rev":0.0,"cajas":0,"pc":0,"pv":0.0,"ord":0}},"customerChart":[{"n":"Gala Fresh Farms - Boca Raton","v":319.2,"s":"fl"},{"n":"Jibarito Ideal Food Basket","v":319.2,"s":"fl"},{"n":"Key Food  ( Dade City)","v":319.2,"s":"fl"},{"n":"Key Food Supermarket Sabal","v":319.2,"s":"fl"},{"n":"Nacional Supermarket","v":319.2,"s":"fl"},{"n":"Key Food Hillsboro Coconut Creek","v":182.4,"s":"fl"},{"n":"Mango Tree Homestead","v":182.4,"s":"fl"},{"n":"Price Choice Super # 7","v":182.4,"s":"fl"},{"n":"SABORES CHILENOS, CORP.","v":182.4,"s":"fl"},{"n":"El Aguila Supermarket","v":91.2,"s":"fl"}],"salesChart":[{"n":"Alexandra J","v":1368.0},{"n":"Andrea P","v":912.0},{"n":"Angela Q","v":456.0}],"customerTable":[{"name":"Gala Fresh Farms - Boca Raton","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Jibarito Ideal Food Basket","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key Food  ( Dade City)","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key Food Supermarket Sabal","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Nacional Supermarket","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key Food Hillsboro Coconut Creek","state":"Florida","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"Mango Tree Homestead","state":"Florida","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"Price Choice Super # 7","state":"Florida","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"SABORES CHILENOS, CORP.","state":"Florida","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"El Aguila Supermarket","state":"Florida","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Superior Meat & Fish Hollywood","state":"Florida","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Ideal Food Deerfield beach","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"La Llave Supermarket Miami Lakes","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Price Choice Foodmarket #11","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Tienda Quetzal #1 Bonita","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Seabra Food Hunters Creek","state":"Florida","revenue":45.6,"cajas":0,"promo_qty":0,"promo_pct":0.0}],"productsCards":[{"name":"Jack Mackerel in Brine","revenue":2736.0,"cajas":78,"promo_pct":24.4}]},"Nov 25":{"summary":{"rev":3055.2,"cajas":81,"pc":14,"pv":638.4,"ord":8,"avg_price":45.6},"states":{"Florida":{"rev":3055.2,"cajas":81,"pc":14,"pv":638.4,"ord":8},"Nueva York":{"rev":0.0,"cajas":0,"pc":0,"pv":0.0,"ord":0}},"customerChart":[{"n":"Key Food Supermarket Lauderhill","v":2325.6,"s":"fl"},{"n":"Key Food Supermarket Sabal","v":319.2,"s":"fl"},{"n":"Key Food (Cape Coral)","v":182.4,"s":"fl"},{"n":"Price Choice Super # 7","v":182.4,"s":"fl"},{"n":"PERIKLES GROUP INC","v":45.6,"s":"fl"}],"salesChart":[{"n":"Gustavo Ochoa","v":1368.0},{"n":"Andrea P","v":1140.0},{"n":"Alexandra J","v":547.2}],"customerTable":[{"name":"Key Food Supermarket Lauderhill","state":"Florida","revenue":2325.6,"cajas":60,"promo_qty":9,"promo_pct":15.0},{"name":"Key Food Supermarket Sabal","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key Food (Cape Coral)","state":"Florida","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"Price Choice Super # 7","state":"Florida","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"PERIKLES GROUP INC","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0}],"productsCards":[{"name":"Jack Mackerel in Brine","revenue":3055.2,"cajas":81,"promo_pct":17.3}]},"Dic 25":{"summary":{"rev":2366.64,"cajas":72,"pc":19,"pv":866.4,"ord":8,"avg_price":44.65},"states":{"Florida":{"rev":1865.04,"cajas":57,"pc":15,"pv":684.0,"ord":6},"Nueva York":{"rev":501.6,"cajas":15,"pc":4,"pv":182.4,"ord":2}},"customerChart":[{"n":"Key Food Supermarket Lauderhill","v":957.6,"s":"fl"},{"n":"Key Food Supermarket Sabal","v":319.2,"s":"fl"},{"n":"Key food supermarket","v":319.2,"s":"ny"},{"n":"Total Supermarket 2","v":319.2,"s":"fl"},{"n":"CTown Supermarket New Britain","v":182.4,"s":"ny"},{"n":"Key Food Hillsboro Coconut Creek","v":182.4,"s":"fl"},{"n":"Festival Supermarket # 5","v":45.6,"s":"fl"},{"n":"Food Fair - Broward Blvd","v":41.04,"s":"fl"}],"salesChart":[{"n":"Alexandra J","v":1865.04},{"n":"Luis Soler","v":501.6}],"customerTable":[{"name":"Key Food Supermarket Lauderhill","state":"Florida","revenue":957.6,"cajas":30,"promo_qty":9,"promo_pct":30.0},{"name":"Key Food Supermarket Sabal","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key food supermarket","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Total Supermarket 2","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"CTown Supermarket New Britain","state":"Nueva York","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"Key Food Hillsboro Coconut Creek","state":"Florida","revenue":182.4,"cajas":5,"promo_qty":0,"promo_pct":0.0},{"name":"Festival Supermarket # 5","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Food Fair - Broward Blvd","state":"Florida","revenue":41.04,"cajas":1,"promo_qty":0,"promo_pct":0.0}],"productsCards":[{"name":"Jack Mackerel in Brine","revenue":2366.64,"cajas":72,"promo_pct":26.4}]},"Ene 26":{"summary":{"rev":4122.24,"cajas":98,"pc":17,"pv":775.2,"ord":39,"avg_price":50.89},"states":{"Florida":{"rev":1185.6,"cajas":25,"pc":6,"pv":273.6,"ord":7},"Nueva York":{"rev":2936.64,"cajas":73,"pc":11,"pv":501.6,"ord":32}},"customerChart":[{"n":"Aries Supermarket","v":319.2,"s":"fl"},{"n":"Gala Fresh Farms","v":319.2,"s":"ny"},{"n":"Key Food 10400","v":319.2,"s":"fl"},{"n":"Key Food Marketplace - 5015 Roosevelt","v":319.2,"s":"ny"},{"n":"The Golden Mango","v":319.2,"s":"ny"},{"n":"Jibarito Ideal Food Basket","v":319.2,"s":"fl"},{"n":"Market Fresh - Middletown","v":182.4,"s":"ny"},{"n":"Market Fresh - Newburgh","v":182.4,"s":"ny"},{"n":"Bravo Supermarket Easton PA","v":91.2,"s":"ny"},{"n":"El Aguila Supermarket","v":91.2,"s":"fl"}],"salesChart":[{"n":"Alexandra J","v":1094.4},{"n":"Diana Angel","v":1076.16},{"n":"Katherine Osorio Duque","v":820.8},{"n":"Luis Soler","v":674.88},{"n":"Mireya Fernandez","v":364.8},{"n":"Angela Q","v":91.2}],"customerTable":[{"name":"Aries Supermarket","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Gala Fresh Farms","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key Food 10400","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key Food Marketplace - 5015 Roosevelt","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"The Golden Mango","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Jibarito Ideal Food Basket","state":"Florida","revenue":319.2,"cajas":0,"promo_qty":0,"promo_pct":0.0},{"name":"Market Fresh - Middletown","state":"Nueva York","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"Market Fresh - Newburgh","state":"Nueva York","revenue":182.4,"cajas":5,"promo_qty":1,"promo_pct":20.0},{"name":"Bravo Supermarket Easton PA","state":"Nueva York","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"El Aguila Supermarket","state":"Florida","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"El Mercado Lakewood LLC DBA Brothers Grocery & Deli","state":"Nueva York","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Fine Fare - Westbury","state":"Nueva York","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Food Bazaar # 35 - Trenton","state":"Nueva York","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Food universal orange","state":"Nueva York","revenue":91.2,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Gala Food - Brdgprt","state":"Nueva York","revenue":91.2,"cajas":0,"promo_qty":0,"promo_pct":0.0},{"name":"City Fresh Market - College Point","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Food Bazaar # 40-Mount Vernon","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Trade Fair No 09","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Associated ( Met Fresh ) Woodside","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Bravo Spmkt-90th St","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"C-Town-New Rochelle","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"CTown Supermarket 81-02","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Carniceria La Palma","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Carniceria Risaralda","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"EL MANGO RICO MARKET INC.","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Eat Fresh Super Market","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Food Bazaar # 36 Sylvan Ave","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Food Mex PA","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Key Food Super - Hollywood","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Kwang Hang c-town","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Mencho Supermarket","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Mi Tierra Spmkt-86","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Portofino Fresh Market","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Sabor Tropical #1","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Super Fresh - Springfield Blvd","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Superfresh Market -Highland Park","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Trade Fair # 6","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Trade Fair No 11","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Fine Fare Fresh (Pionner Supermarket)","state":"Nueva York","revenue":45.6,"cajas":0,"promo_qty":0,"promo_pct":0.0}],"productsCards":[{"name":"Jack Mackerel in Brine","revenue":4122.24,"cajas":98,"promo_pct":17.3}]},"Feb 26":{"summary":{"rev":5207.52,"cajas":151,"pc":39,"pv":1778.4,"ord":23,"avg_price":46.5},"states":{"Florida":{"rev":3192.0,"cajas":94,"pc":27,"pv":1231.2,"ord":12},"Nueva York":{"rev":2015.52,"cajas":57,"pc":12,"pv":547.2,"ord":11}},"customerChart":[{"n":"Aries Supermarket","v":638.4,"s":"fl"},{"n":"Key Food Supermarket Lauderhill","v":638.4,"s":"fl"},{"n":"Food Fair - Broward Blvd","v":456.0,"s":"fl"},{"n":"Bravo Supermarket - Hempstead","v":401.28,"s":"ny"},{"n":"Bravo Supermarket - Pembroke","v":319.2,"s":"fl"},{"n":"C town Poconos","v":319.2,"s":"ny"},{"n":"C-Town / Allentown","v":319.2,"s":"ny"},{"n":"Homestead Market DBA Mango Tree Homestead","v":319.2,"s":"fl"},{"n":"Jibarito Ideal Food Basket","v":319.2,"s":"fl"},{"n":"Key Food 10400","v":319.2,"s":"fl"}],"salesChart":[{"n":"Alexandra J","v":1915.2},{"n":"Emily Rivas","v":1140.0},{"n":"Luis Soler","v":975.84},{"n":"Katherine Osorio Duque","v":720.48},{"n":"Paula Escobar","v":319.2},{"n":"Angela Q","v":136.8}],"customerTable":[{"name":"Aries Supermarket","state":"Florida","revenue":638.4,"cajas":20,"promo_qty":6,"promo_pct":30.0},{"name":"Key Food Supermarket Lauderhill","state":"Florida","revenue":638.4,"cajas":20,"promo_qty":6,"promo_pct":30.0},{"name":"Food Fair - Broward Blvd","state":"Florida","revenue":456.0,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Bravo Supermarket - Hempstead","state":"Nueva York","revenue":401.28,"cajas":9,"promo_qty":0,"promo_pct":0.0},{"name":"Bravo Supermarket - Pembroke","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"C town Poconos","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"C-Town / Allentown","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Homestead Market DBA Mango Tree Homestead","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Jibarito Ideal Food Basket","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key Food 10400","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Super compare fresh","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Trade Fair # 8","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Ideal Spmkt - Jamaica","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Key Food - Norwalk","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Universal Food Market","state":"Nueva York","revenue":82.08,"cajas":2,"promo_qty":0,"promo_pct":0.0},{"name":"Fine Fare - Farmingville","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Food Bazaar # 36 Sylvan Ave","state":"Nueva York","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Ideal Food Basket of Dania Beach","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"La Chiquita Kissimmee Produce","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"OC Shoe Repair","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0},{"name":"Seabra Food Hunters Creek","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0}],"productsCards":[{"name":"Jack Mackerel in Brine","revenue":5207.52,"cajas":151,"promo_pct":25.8}]},"Mar 26":{"summary":{"rev":4240.8,"cajas":130,"pc":40,"pv":1824.0,"ord":15,"avg_price":47.12},"states":{"Florida":{"rev":3602.4,"cajas":110,"pc":34,"pv":1550.4,"ord":13},"Nueva York":{"rev":638.4,"cajas":20,"pc":6,"pv":273.6,"ord":2}},"customerChart":[{"n":"Aries Supermarket","v":1276.8,"s":"fl"},{"n":"Key Food Supermarket Lauderhill","v":638.4,"s":"fl"},{"n":"Festival Supermarket # 5","v":456.0,"s":"fl"},{"n":"Food Fair - Broward Blvd","v":319.2,"s":"fl"},{"n":"Food Star Supermarket","v":319.2,"s":"fl"},{"n":"Fruit Tree Farm Inc.","v":319.2,"s":"ny"},{"n":"Key Food 10400","v":319.2,"s":"fl"},{"n":"Market Fresh - Middletown","v":319.2,"s":"ny"},{"n":"Ideal food basket Port Saint Lucie","v":228.0,"s":"fl"},{"n":"Seabra Food Hunters Creek","v":45.6,"s":"fl"}],"salesChart":[{"n":"Emily Rivas","v":1641.6},{"n":"Alexandra J","v":1596.0},{"n":"Luis Soler","v":319.2},{"n":"Katherine Osorio Duque","v":319.2},{"n":"Raquel L","v":319.2},{"n":"Angela Q","v":45.6}],"customerTable":[{"name":"Aries Supermarket","state":"Florida","revenue":1276.8,"cajas":40,"promo_qty":12,"promo_pct":30.0},{"name":"Key Food Supermarket Lauderhill","state":"Florida","revenue":638.4,"cajas":23,"promo_qty":9,"promo_pct":39.1},{"name":"Festival Supermarket # 5","state":"Florida","revenue":456.0,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Food Fair - Broward Blvd","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Food Star Supermarket","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Fruit Tree Farm Inc.","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Key Food 10400","state":"Florida","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Market Fresh - Middletown","state":"Nueva York","revenue":319.2,"cajas":10,"promo_qty":3,"promo_pct":30.0},{"name":"Ideal food basket Port Saint Lucie","state":"Florida","revenue":228.0,"cajas":6,"promo_qty":1,"promo_pct":16.7},{"name":"Seabra Food Hunters Creek","state":"Florida","revenue":45.6,"cajas":1,"promo_qty":0,"promo_pct":0.0}],"productsCards":[{"name":"Jack Mackerel in Brine","revenue":3602.4,"cajas":110,"promo_pct":30.9},{"name":"Jack Mackerel in Tomato Sauce","revenue":638.4,"cajas":20,"promo_pct":30.0}]}};
+
+let selM=-1, genBuilt=false;
+let genMonthStateChart=null, genCajasPromoChart=null, genTrendChart=null, genPromoStateChart=null, genCustomersChart=null, genSalesChart=null, genProductsChart=null;
+
+function getGeneralData(m){
+  return GENERAL_DATA[m===-1?'ALL':MONTHS[m]] || GENERAL_DATA.ALL;
+}
+
+function smHTML(stateKey,m,col){
+  const gd=getGeneralData(m);
+  const st=gd.states[stateKey==='fl'?'Florida':'Nueva York'] || {rev:0,cajas:0,pc:0,pv:0,ord:0};
+  const r=st.rev,c=st.cajas,pc=st.pc,pv=st.pv,o=st.ord;
+  const pp=c>0?pc/c*100:0, roi=pv>0?r/pv:0, rpc=(c-pc)>0?r/(c-pc):0;
+  return `<div class="sm"><div class="sm-lbl">Revenue</div><div class="sm-val" style="color:var(${col})">${f$(r)}</div><div class="sm-sub">${o} pedidos</div></div>
+<div class="sm"><div class="sm-lbl">Cajas</div><div class="sm-val">${fN(c)}</div><div class="sm-sub">Rev/caja ${(c-pc)>0?f$(rpc):'—'}</div></div>
 <div class="sm"><div class="sm-lbl">% Promo Vol</div><div class="sm-val" style="color:var(--promo)">${pp.toFixed(1)}%</div><div class="sm-sub">${fN(pc)} cajas</div></div>
 <div class="sm"><div class="sm-lbl">Inv. Promos</div><div class="sm-val" style="color:var(--promo)">${f$(pv)}</div><div class="sm-sub">&nbsp;</div></div>
 <div class="sm"><div class="sm-lbl">ROI Promo</div><div class="sm-val" style="color:${roi>=3?'var(--teal)':'var(--text)'}">${roi.toFixed(2)}x</div><div class="sm-sub">&nbsp;</div></div>
@@ -415,85 +402,293 @@ function smHTML(sd,m,col){
 }
 
 function renderKpis(m){
-  const r=getS(A.rev,m),c=getS(A.cajas,m),o=getS(A.ord,m),pc=getS(A.pc,m),pv=getS(A.pv,m);
-  const pp=c>0?pc/c*100:0;
+  const gd=getGeneralData(m);
+  const s=gd.summary;
+  const pp=s.cajas>0?s.pc/s.cajas*100:0;
   $('kpiGrid').innerHTML=`
-<div class="kpi"><div class="kpi-label">Revenue Total</div><div class="kpi-val">${f$(r)}</div><div class="kpi-sub">${m===-1?'6 meses acum.':'mes seleccionado'}</div></div>
-<div class="kpi"><div class="kpi-label">Cajas Entregadas</div><div class="kpi-val">${fN(c)}</div><div class="kpi-sub">96.8% cumplimiento</div></div>
-<div class="kpi"><div class="kpi-label">Pedidos Únicos</div><div class="kpi-val">${fN(o)}</div><div class="kpi-sub">Ticket prom. ${o>0?f$(r/o):'—'}</div></div>
-<div class="kpi"><div class="kpi-label">Precio / Caja</div><div class="kpi-val">$47.13</div><div class="kpi-sub">Precio estable</div></div>
-<div class="kpi pk"><div class="kpi-label">% Vol. en Promo</div><div class="kpi-val pv">${pp.toFixed(1)}%</div><div class="kpi-sub">${fN(pc)} cajas regaladas</div></div>
-<div class="kpi pk"><div class="kpi-label">Inversión Promos</div><div class="kpi-val pv">${f$(pv)}</div><div class="kpi-sub">${r>0?((pv/r)*100).toFixed(1):0}% del revenue</div></div>`;
-  $('smFL').innerHTML=smHTML(D.fl,m,'--fl');
-  $('smNY').innerHTML=smHTML(D.ny,m,'--ny');
+<div class="kpi"><div class="kpi-label">Revenue Total</div><div class="kpi-val">${f$(s.rev)}</div><div class="kpi-sub">${m===-1?'6 meses acum.':'mes seleccionado'}</div></div>
+<div class="kpi"><div class="kpi-label">Cajas Entregadas</div><div class="kpi-val">${fN(s.cajas)}</div><div class="kpi-sub">Pagadas: ${fN(Math.max(s.cajas-s.pc,0))} · Promo: ${fN(s.pc)}</div></div>
+<div class="kpi"><div class="kpi-label">Pedidos Únicos</div><div class="kpi-val">${fN(s.ord)}</div><div class="kpi-sub">Ticket prom. ${s.ord>0?f$(s.rev/s.ord):'—'}</div></div>
+<div class="kpi"><div class="kpi-label">Precio / Caja</div><div class="kpi-val">${f$(s.avg_price)}</div><div class="kpi-sub">Sobre cajas pagadas</div></div>
+<div class="kpi pk"><div class="kpi-label">% Vol. en Promo</div><div class="kpi-val pv">${pp.toFixed(1)}%</div><div class="kpi-sub">${fN(s.pc)} cajas regaladas</div></div>
+<div class="kpi pk"><div class="kpi-label">Inversión Promos</div><div class="kpi-val pv">${f$(s.pv)}</div><div class="kpi-sub">${s.rev>0?((s.pv/s.rev)*100).toFixed(1):0}% del revenue</div></div>`;
+  $('smFL').innerHTML=smHTML('fl',m,'--fl');
+  $('smNY').innerHTML=smHTML('ny',m,'--ny');
+}
+
+function setChartTitleText(m){
+  const titles=document.querySelectorAll('#chartsSection .pt');
+  if(m===-1){
+    if(titles[0]) titles[0].textContent='Revenue mensual por estado';
+    if(titles[1]) titles[1].textContent='Cajas pagadas vs. en promo';
+    if(titles[2]) titles[2].textContent='Tendencia revenue vs. inversión promos';
+    if(titles[3]) titles[3].textContent='Inversión promos por estado';
+  } else {
+    const ml=MONTHS[m];
+    if(titles[0]) titles[0].textContent=`Revenue por estado · ${ml}`;
+    if(titles[1]) titles[1].textContent=`Cajas pagadas vs. promo · ${ml}`;
+    if(titles[2]) titles[2].textContent=`Revenue vs. inversión promos · ${ml}`;
+    if(titles[3]) titles[3].textContent=`Inversión promos por estado · ${ml}`;
+  }
+}
+
+function updateGeneralCharts(m){
+  setChartTitleText(m);
+  if(m===-1){
+    genMonthStateChart.config.type='bar';
+    genMonthStateChart.data.labels=MONTHS;
+    genMonthStateChart.data.datasets=[
+      {label:'Florida',data:D.fl.rev,backgroundColor:GC.fl,borderRadius:3},
+      {label:'Nueva York',data:D.ny.rev,backgroundColor:GC.ny,borderRadius:3}
+    ];
+    genMonthStateChart.options.scales.x.stacked=false;
+    genMonthStateChart.options.scales.y.stacked=false;
+
+    const cajP=A.cajas.map((c,i)=>c-A.pc[i]);
+    genCajasPromoChart.data.labels=MONTHS;
+    genCajasPromoChart.data.datasets=[
+      {label:'Pagadas',data:cajP,backgroundColor:GC.fl,stack:'s',borderRadius:0},
+      {label:'Promo',data:A.pc,backgroundColor:GC.promo,stack:'s'}
+    ];
+    genCajasPromoChart.options.scales.x.stacked=true;
+    genCajasPromoChart.options.scales.y.stacked=true;
+
+    genTrendChart.config.type='line';
+    genTrendChart.data.labels=MONTHS;
+    genTrendChart.data.datasets=[
+      {label:'Revenue',data:A.rev,borderColor:GC.fl,backgroundColor:'rgba(37,99,235,.07)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:GC.fl,borderWidth:2},
+      {label:'Inv. Promos',data:A.pv,borderColor:GC.promo,backgroundColor:'transparent',borderDash:[5,4],tension:.3,pointRadius:3,pointBackgroundColor:GC.promo,borderWidth:1.5}
+    ];
+
+    genPromoStateChart.data.labels=MONTHS;
+    genPromoStateChart.data.datasets=[
+      {label:'Florida',data:D.fl.pv,backgroundColor:GC.fl,borderRadius:3},
+      {label:'Nueva York',data:D.ny.pv,backgroundColor:GC.ny,borderRadius:3}
+    ];
+  } else {
+    const gd=getGeneralData(m);
+    const fl=gd.states['Florida'] || {rev:0,pv:0};
+    const ny=gd.states['Nueva York'] || {rev:0,pv:0};
+
+    genMonthStateChart.config.type='bar';
+    genMonthStateChart.data.labels=['Florida','Nueva York'];
+    genMonthStateChart.data.datasets=[
+      {label:'Revenue',data:[fl.rev,ny.rev],backgroundColor:[GC.fl,GC.ny],borderRadius:3}
+    ];
+    genMonthStateChart.options.scales.x.stacked=false;
+    genMonthStateChart.options.scales.y.stacked=false;
+
+    genCajasPromoChart.data.labels=['Pagadas','Promo'];
+    genCajasPromoChart.data.datasets=[
+      {label:'Cajas',data:[Math.max(gd.summary.cajas-gd.summary.pc,0),gd.summary.pc],backgroundColor:[GC.fl,GC.promo],borderRadius:3}
+    ];
+    genCajasPromoChart.options.scales.x.stacked=false;
+    genCajasPromoChart.options.scales.y.stacked=false;
+
+    genTrendChart.config.type='bar';
+    genTrendChart.data.labels=['Revenue','Inv. Promos'];
+    genTrendChart.data.datasets=[
+      {label:'Valor',data:[gd.summary.rev,gd.summary.pv],backgroundColor:[GC.fl,GC.promo],borderRadius:3}
+    ];
+
+    genPromoStateChart.data.labels=['Florida','Nueva York'];
+    genPromoStateChart.data.datasets=[
+      {label:'Inv. Promos',data:[fl.pv,ny.pv],backgroundColor:[GC.fl,GC.ny],borderRadius:3}
+    ];
+  }
+  genMonthStateChart.update();
+  genCajasPromoChart.update();
+  genTrendChart.update();
+  genPromoStateChart.update();
+}
+
+function updateCustomerTeam(m){
+  const gd=getGeneralData(m);
+  const cD=gd.customerChart;
+  genCustomersChart.data.labels=cD.map(c=>c.n);
+  genCustomersChart.data.datasets[0].data=cD.map(c=>c.v);
+  genCustomersChart.data.datasets[0].backgroundColor=cD.map(c=>c.s==='fl'?GC.fl:GC.ny);
+  genCustomersChart.update();
+
+  const spD=gd.salesChart;
+  genSalesChart.data.labels=spD.map(s=>s.n);
+  genSalesChart.data.datasets[0].data=spD.map(s=>s.v);
+  genSalesChart.data.datasets[0].backgroundColor=spD.map((_,i)=>i===0?GC.fl:'rgba(37,99,235,.35)');
+  genSalesChart.update();
+}
+
+function renderCustomerTable(m){
+  const rows=getGeneralData(m).customerTable;
+  $('custTable').innerHTML=rows.map(r=>`
+<tr><td>${r.name}</td><td><span class="badge ${r.state==='Florida'?'bfl':'bny'}">${r.state==='Florida'?'FL':'NY'}</span></td><td class="r">${f$(r.revenue)}</td><td class="r">${fN(r.cajas)}</td><td class="r">${fN(r.promo_qty)}</td><td class="r" style="color:${r.promo_pct>25?'var(--promo)':'var(--text)'};font-weight:${r.promo_pct>25?600:400}">${r.promo_pct.toFixed(1)}%</td></tr>
+`).join('');
+}
+
+function renderProducts(m){
+  const products=getGeneralData(m).productsCards;
+  genProductsChart.data.labels=products.map(p=>p.name.replace('Jack Mackerel ','').replace('in ',''));
+  genProductsChart.data.datasets[0].data=products.map(p=>p.revenue);
+  genProductsChart.data.datasets[0].backgroundColor=products.map(p=>/Tomato/i.test(p.name)?'#d97706':GC.fl);
+  genProductsChart.update();
+
+  const maxRev=Math.max(...products.map(p=>p.revenue),1);
+  $('productCardsPanel').innerHTML=products.map(p=>{
+    const isTomato=/Tomato/i.test(p.name);
+    const bg=isTomato?'rgba(217,119,6,.04)':'rgba(37,99,235,.04)';
+    const border=isTomato?'1px solid rgba(217,119,6,.2)':'1px solid rgba(37,99,235,.15)';
+    const badgeClass=isTomato?'bnew':'bok';
+    const badgeText=isTomato?'Nuevo SKU':'Core SKU';
+    const barColor=isTomato?'#d97706':'var(--fl)';
+    const note=isTomato?'Incorporado Mar 2026 — datos iniciales':'';
+    const width=Math.max((p.revenue/maxRev)*100,3);
+    return `
+<div style="background:${bg};border:${border};border-radius:8px;padding:14px 16px;">
+  <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;"><span style="font-size:13px;font-weight:500;">${p.name}</span><span class="badge ${badgeClass}">${badgeText}</span></div>
+  <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:6px;font-size:11px;">
+    <div><div style="color:var(--muted)">Revenue</div><div class="num" style="font-size:15px;font-weight:500;">${f$(p.revenue)}</div></div>
+    <div><div style="color:var(--muted)">Cajas</div><div class="num" style="font-size:15px;font-weight:500;">${fN(p.cajas)}</div></div>
+    <div><div style="color:var(--muted)">% Promo</div><div class="num" style="font-size:15px;font-weight:500;color:var(--promo)">${p.promo_pct.toFixed(1)}%</div></div>
+  </div>
+  ${note?`<div style="font-size:10px;color:var(--muted);margin-top:8px;">${note}</div>`:''}
+  <div class="pbar-bg"><div class="pbar" style="width:${width}%;background:${barColor}"></div></div>
+</div>`;
+  }).join('');
+}
+
+function renderGeneralDynamic(m){
+  renderKpis(m);
+  updateGeneralCharts(m);
+  updateCustomerTeam(m);
+  renderCustomerTable(m);
+  renderProducts(m);
 }
 
 function setMonth(m,btn){
   selM=m;
   document.querySelectorAll('.mbtn').forEach(b=>b.classList.remove('active'));
   btn.classList.add('active');
-  renderKpis(m);
-  $('chartsSection').style.display=m===-1?'':'none';
+  renderGeneralDynamic(m);
 }
 
 function buildGeneral(){
-  if(genBuilt)return; genBuilt=true;
-  renderKpis(-1);
+  if(genBuilt)return;
+  genBuilt=true;
 
-  new Chart($('cMonthState'),{type:'bar',data:{labels:MONTHS,datasets:[
-    {label:'Florida',data:D.fl.rev,backgroundColor:GC.fl,borderRadius:3},
-    {label:'Nueva York',data:D.ny.rev,backgroundColor:GC.ny,borderRadius:3}
-  ]},options:{...bopts(f$),plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+f$(c.raw)}}}}});
+  genMonthStateChart=new Chart($('cMonthState'), {
+    type:'bar',
+    data:{
+      labels:MONTHS,
+      datasets:[
+        {label:'Florida',data:D.fl.rev,backgroundColor:GC.fl,borderRadius:3},
+        {label:'Nueva York',data:D.ny.rev,backgroundColor:GC.ny,borderRadius:3}
+      ]
+    },
+    options:{
+      ...bopts(f$),
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+f$(c.raw)}}}
+    }
+  });
 
   const cajP=A.cajas.map((c,i)=>c-A.pc[i]);
-  new Chart($('cCajasPromo'),{type:'bar',data:{labels:MONTHS,datasets:[
-    {label:'Pagadas',data:cajP,backgroundColor:GC.fl,stack:'s',borderRadius:0},
-    {label:'Promo',data:A.pc,backgroundColor:GC.promo,stack:'s'}
-  ]},options:{responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+' cajas'}}},scales:{x:{grid:{color:GC.grid},ticks:{color:GC.text,font:{size:10}},stacked:true},y:{grid:{color:GC.grid},ticks:{color:GC.text,font:{size:10}},stacked:true}}}});
-
-  new Chart($('cTrend'),{type:'line',data:{labels:MONTHS,datasets:[
-    {label:'Revenue',data:A.rev,borderColor:GC.fl,backgroundColor:'rgba(37,99,235,.07)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:GC.fl,borderWidth:2},
-    {label:'Inv. Promos',data:A.pv,borderColor:GC.promo,backgroundColor:'transparent',borderDash:[5,4],tension:.3,pointRadius:3,pointBackgroundColor:GC.promo,borderWidth:1.5}
-  ]},options:{...bopts(f$),plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+f$(c.raw)}}}}});
-
-  new Chart($('cPromoState'),{type:'bar',data:{labels:MONTHS,datasets:[
-    {label:'Florida',data:D.fl.pv,backgroundColor:GC.fl,borderRadius:3},
-    {label:'Nueva York',data:D.ny.pv,backgroundColor:GC.ny,borderRadius:3}
-  ]},options:{...bopts(f$),plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+f$(c.raw)}}}}});
-
-  const cD=[{n:'KF Lauderhill',v:4560,s:'fl'},{n:'Aries Supermarket',v:2234.4,s:'fl'},{n:'Key Food 10400',v:957.6,s:'fl'},{n:'KF Sabal',v:957.6,s:'fl'},{n:'Jibarito Ideal FB',v:957.6,s:'fl'},{n:'Food Fair Broward',v:816.24,s:'fl'},{n:'Mkt Fresh Mid.',v:501.6,s:'ny'},{n:'Festival Spmkt #5',v:501.6,s:'fl'},{n:'Bravo Hempstead',v:401.28,s:'ny'},{n:'KF Hillsboro CC',v:364.8,s:'fl'}];
-  new Chart($('cCustomers'),{type:'bar',data:{labels:cD.map(c=>c.n),datasets:[{data:cD.map(c=>c.v),backgroundColor:cD.map(c=>c.s==='fl'?GC.fl:GC.ny),borderRadius:3}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f$(c.raw)}}},scales:{x:{grid:{color:GC.grid},ticks:{color:GC.text,font:{size:10},callback:v=>'$'+(v/1000).toFixed(1)+'k'}},y:{grid:{display:false},ticks:{color:GC.text,font:{size:10}}}}}});
-
-  const spD=[{n:'Alexandra J',v:8385.84},{n:'Emily Rivas',v:2781.6},{n:'Luis Soler',v:2471.52},{n:'Andrea P',v:2052},{n:'K. Osorio',v:1860.48},{n:'G. Ochoa',v:1368},{n:'Diana Angel',v:1076.16},{n:'Angela Q',v:729.6}];
-  new Chart($('cSales'),{type:'bar',data:{labels:spD.map(s=>s.n),datasets:[{data:spD.map(s=>s.v),backgroundColor:spD.map((_,i)=>i===0?GC.fl:'rgba(37,99,235,.35)'),borderRadius:3}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f$(c.raw)}}},scales:{x:{grid:{color:GC.grid},ticks:{color:GC.text,font:{size:10},callback:v=>'$'+(v/1000).toFixed(1)+'k'}},y:{grid:{display:false},ticks:{color:GC.text,font:{size:10}}}}}});
-
-  new Chart($('cProducts'),{type:'bar',data:{labels:['Jack Mackerel Brine','Jack Mackerel Tomato'],datasets:[{data:[21090,638.4],backgroundColor:[GC.fl,'#d97706'],borderRadius:4}]},options:{indexAxis:'y',responsive:true,maintainAspectRatio:false,plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f$(c.raw)}}},scales:{x:{grid:{color:GC.grid},ticks:{color:GC.text,font:{size:10},callback:v=>'$'+(v/1000).toFixed(0)+'k'}},y:{grid:{display:false},ticks:{color:GC.text,font:{size:10}}}}}});
-
-  const custR=[
-    ['Key Food Supermarket Lauderhill','Florida',4560,133,33,24.8],
-    ['Aries Supermarket','Florida',2234.4,70,21,30],
-    ['Key Food 10400','Florida',957.6,30,9,30],
-    ['Key Food Supermarket Sabal','Florida',957.6,30,9,30],
-    ['Jibarito Ideal Food Basket','Florida',957.6,20,6,30],
-    ['Food Fair - Broward Blvd','Florida',816.24,21,6,28.6],
-    ['Market Fresh - Middletown','Nueva York',501.6,15,4,26.7],
-    ['Festival Supermarket # 5','Florida',501.6,11,3,27.3],
-    ['Bravo Supermarket - Hempstead','Nueva York',401.28,9,0,0],
-    ['Key Food Hillsboro Coconut Creek','Florida',364.8,10,2,20],
-    ['Price Choice Super # 7','Florida',364.8,10,2,20],
-    ['Bravo Supermarket - Pembroke','Florida',319.2,10,3,30],
-    ['C-Town / Allentown','Nueva York',319.2,10,3,30],
-    ['C town Poconos','Nueva York',319.2,10,3,30],
-  ];
-  const tb=$('custTable');
-  custR.forEach(([n,s,r,c,pc,pp])=>{
-    const tr=document.createElement('tr');
-    tr.innerHTML=`<td>${n}</td><td><span class="badge ${s==='Florida'?'bfl':'bny'}">${s==='Florida'?'FL':'NY'}</span></td><td class="r">${f$(r)}</td><td class="r">${c}</td><td class="r">${pc}</td><td class="r" style="color:${pp>25?'var(--promo)':'var(--text)'};font-weight:${pp>25?600:400}">${pp.toFixed(1)}%</td>`;
-    tb.appendChild(tr);
+  genCajasPromoChart=new Chart($('cCajasPromo'), {
+    type:'bar',
+    data:{
+      labels:MONTHS,
+      datasets:[
+        {label:'Pagadas',data:cajP,backgroundColor:GC.fl,stack:'s',borderRadius:0},
+        {label:'Promo',data:A.pc,backgroundColor:GC.promo,stack:'s'}
+      ]
+    },
+    options:{
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+c.raw+' cajas'}}},
+      scales:{
+        x:{grid:{color:GC.grid},ticks:{color:GC.text,font:{size:10}},stacked:true},
+        y:{grid:{color:GC.grid},ticks:{color:GC.text,font:{size:10}},stacked:true}
+      }
+    }
   });
-}
 
+  genTrendChart=new Chart($('cTrend'), {
+    type:'line',
+    data:{
+      labels:MONTHS,
+      datasets:[
+        {label:'Revenue',data:A.rev,borderColor:GC.fl,backgroundColor:'rgba(37,99,235,.07)',fill:true,tension:.3,pointRadius:4,pointBackgroundColor:GC.fl,borderWidth:2},
+        {label:'Inv. Promos',data:A.pv,borderColor:GC.promo,backgroundColor:'transparent',borderDash:[5,4],tension:.3,pointRadius:3,pointBackgroundColor:GC.promo,borderWidth:1.5}
+      ]
+    },
+    options:{
+      ...bopts(f$),
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+f$(c.raw)}}}
+    }
+  });
+
+  genPromoStateChart=new Chart($('cPromoState'), {
+    type:'bar',
+    data:{
+      labels:MONTHS,
+      datasets:[
+        {label:'Florida',data:D.fl.pv,backgroundColor:GC.fl,borderRadius:3},
+        {label:'Nueva York',data:D.ny.pv,backgroundColor:GC.ny,borderRadius:3}
+      ]
+    },
+    options:{
+      ...bopts(f$),
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>c.dataset.label+': '+f$(c.raw)}}}
+    }
+  });
+
+  genCustomersChart=new Chart($('cCustomers'), {
+    type:'bar',
+    data:{labels:[],datasets:[{data:[],backgroundColor:[],borderRadius:3}]},
+    options:{
+      indexAxis:'y',
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f$(c.raw)}}},
+      scales:{
+        x:{grid:{color:GC.grid},ticks:{color:GC.text,font:{size:10},callback:v=>'$'+(v/1000).toFixed(1)+'k'}},
+        y:{grid:{display:false},ticks:{color:GC.text,font:{size:10}}}
+      }
+    }
+  });
+
+  genSalesChart=new Chart($('cSales'), {
+    type:'bar',
+    data:{labels:[],datasets:[{data:[],backgroundColor:[],borderRadius:3}]},
+    options:{
+      indexAxis:'y',
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f$(c.raw)}}},
+      scales:{
+        x:{grid:{color:GC.grid},ticks:{color:GC.text,font:{size:10},callback:v=>'$'+(v/1000).toFixed(1)+'k'}},
+        y:{grid:{display:false},ticks:{color:GC.text,font:{size:10}}}
+      }
+    }
+  });
+
+  genProductsChart=new Chart($('cProducts'), {
+    type:'bar',
+    data:{labels:[],datasets:[{data:[],backgroundColor:[],borderRadius:4}]},
+    options:{
+      indexAxis:'y',
+      responsive:true,
+      maintainAspectRatio:false,
+      plugins:{legend:{display:false},tooltip:{callbacks:{label:c=>f$(c.raw)}}},
+      scales:{
+        x:{grid:{color:GC.grid},ticks:{color:GC.text,font:{size:10},callback:v=>'$'+(v/1000).toFixed(0)+'k'}},
+        y:{grid:{display:false},ticks:{color:GC.text,font:{size:10}}}
+      }
+    }
+  });
+
+  renderGeneralDynamic(-1);
+}
 // ======== MOM ========
+
 let mBuilt=false;
 function buildMomCharts(){
   if(mBuilt)return; mBuilt=true;
