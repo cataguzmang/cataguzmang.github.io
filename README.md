@@ -37,7 +37,7 @@ Or just open `index.html` in a browser.
 ```
 .
 ├── index.html      # the entire landing page (HTML + Tailwind + JS)
-├── yo_github.png   # hero avatar
+├── yo_git.png      # hero avatar
 └── README.md
 ```
 
