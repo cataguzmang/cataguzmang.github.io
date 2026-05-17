@@ -73,6 +73,7 @@
       <ul class="hidden md:flex items-center gap-8 text-sm">
         <li><a href="#about"      class="nav-link" data-i18n="nav_about">About</a></li>
         <li><a href="#experience" class="nav-link" data-i18n="nav_experience">Experience</a></li>
+        <li><a href="#education"  class="nav-link" data-i18n="nav_education">Education</a></li>
         <li><a href="#projects"   class="nav-link" data-i18n="nav_projects">Projects</a></li>
         <li><a href="#stack"      class="nav-link" data-i18n="nav_stack">Stack</a></li>
         <li><a href="#contact"    class="nav-link" data-i18n="nav_contact">Contact</a></li>
@@ -96,6 +97,7 @@
       <ul class="flex flex-col gap-3 text-sm">
         <li><a href="#about"      data-i18n="nav_about">About</a></li>
         <li><a href="#experience" data-i18n="nav_experience">Experience</a></li>
+        <li><a href="#education"  data-i18n="nav_education">Education</a></li>
         <li><a href="#projects"   data-i18n="nav_projects">Projects</a></li>
         <li><a href="#stack"      data-i18n="nav_stack">Stack</a></li>
         <li><a href="#contact"    data-i18n="nav_contact">Contact</a></li>
@@ -234,6 +236,50 @@
             Monthly financial reporting in Excel, budget tracking and collection strategy — debt reduced by <em>30%</em>. My first taste of <em>turning messy spreadsheets into decisions</em>.
           </p>
         </li>
+      </ol>
+    </div>
+  </section>
+
+  <!-- EDUCATION -->
+  <section id="education" class="py-24 md:py-32">
+    <div class="max-w-5xl mx-auto px-6">
+      <div class="reveal">
+        <span class="text-xs uppercase tracking-widest text-brand-blue font-medium" data-i18n="edu_kicker">Education</span>
+        <h2 class="mt-2 text-3xl md:text-5xl font-semibold tracking-tight" data-i18n="edu_title">The academic <em class="not-italic text-brand-blue">foundation</em>.</h2>
+      </div>
+
+      <ol class="mt-14 relative border-l border-black/10 dark:border-white/15 space-y-10 ml-2">
+
+        <!-- Máster -->
+        <li class="pl-8 relative reveal">
+          <span class="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-brand-blue ring-4 ring-brand-beige dark:ring-brand-ink"></span>
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 class="text-xl md:text-2xl font-semibold tracking-tight" data-i18n="edu_1_degree">Máster en Business Analytics &amp; IA</h3>
+            <span class="text-xs text-black/55 dark:text-brand-cream/55" data-i18n="edu_1_date">Oct 2025 — Jul 2026 · Madrid, ES</span>
+          </div>
+          <p class="mt-1 text-sm text-brand-blue font-medium" data-i18n="edu_1_institution">INESDI TechSchool</p>
+        </li>
+
+        <!-- Diplomado -->
+        <li class="pl-8 relative reveal">
+          <span class="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-brand-blue/70 ring-4 ring-brand-beige dark:ring-brand-ink"></span>
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 class="text-lg md:text-xl font-semibold tracking-tight" data-i18n="edu_2_degree">Diplomado en Ciencia de Datos &amp; Big Data</h3>
+            <span class="text-xs text-black/55 dark:text-brand-cream/55" data-i18n="edu_2_date">Ago 2023 — Ago 2024 · Santiago, CL</span>
+          </div>
+          <p class="mt-1 text-sm text-brand-blue font-medium" data-i18n="edu_2_institution">Universidad de los Andes</p>
+        </li>
+
+        <!-- Universidad -->
+        <li class="pl-8 relative reveal">
+          <span class="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-brand-blue/70 ring-4 ring-brand-beige dark:ring-brand-ink"></span>
+          <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
+            <h3 class="text-lg md:text-xl font-semibold tracking-tight" data-i18n="edu_3_degree">Ingeniería Civil Industrial</h3>
+            <span class="text-xs text-black/55 dark:text-brand-cream/55" data-i18n="edu_3_date">Mar 2018 — Feb 2024 · Concepción, CL</span>
+          </div>
+          <p class="mt-1 text-sm text-brand-blue font-medium" data-i18n="edu_3_institution">Universidad del Desarrollo</p>
+        </li>
+
       </ol>
     </div>
   </section>
@@ -377,7 +423,7 @@
     // ---------- i18n ----------
     const i18n = {
       en: {
-        nav_about: "About", nav_experience: "Experience", nav_projects: "Projects", nav_stack: "Stack", nav_contact: "Contact",
+        nav_about: "About", nav_experience: "Experience", nav_education: "Education", nav_projects: "Projects", nav_stack: "Stack", nav_contact: "Contact",
         hero_eyebrow: "AI Systems Engineer · Spain",
         hero_tagline: 'I automate the <em>boring stuff</em> and build systems that work. <em class="text-brand-beige/60">(Eventually).</em>',
         hero_cta_primary: "Get in touch →",
@@ -423,6 +469,18 @@
         exp_5_date: "2021 — 2023 · Concepción, CL",
         exp_5_body: 'Monthly financial reporting in Excel, budget tracking and collection strategy — debt reduced by <em>30%</em>. My first taste of <em>turning messy spreadsheets into decisions</em>.',
 
+        edu_kicker: "Education",
+        edu_title: 'The academic <em class="not-italic text-brand-blue">foundation</em>.',
+        edu_1_degree: "Master's in Business Analytics &amp; AI",
+        edu_1_institution: "INESDI TechSchool",
+        edu_1_date: "Oct 2025 — Jul 2026 · Madrid, ES · In progress",
+        edu_2_degree: "Diploma in Data Science &amp; Big Data",
+        edu_2_institution: "Universidad de los Andes",
+        edu_2_date: "Aug 2023 — Aug 2024 · Santiago, CL",
+        edu_3_degree: "Industrial Civil Engineering",
+        edu_3_institution: "Universidad del Desarrollo",
+        edu_3_date: "Mar 2018 — Feb 2024 · Concepción, CL",
+
         proj_kicker: "Projects",
         proj_title: "What's next.",
         proj_intro: "Currently building personal projects in AI systems and automation. <em>Always learning, always automating.</em>",
@@ -449,7 +507,7 @@
         footer_right: "Catalina Guzmán — AI Systems Engineer",
       },
       es: {
-        nav_about: "Sobre mí", nav_experience: "Experiencia", nav_projects: "Proyectos", nav_stack: "Stack", nav_contact: "Contacto",
+        nav_about: "Sobre mí", nav_experience: "Experiencia", nav_education: "Estudios", nav_projects: "Proyectos", nav_stack: "Stack", nav_contact: "Contacto",
         hero_eyebrow: "AI Systems Engineer · Spain",
         hero_tagline: 'Automatizo <em>lo aburrido</em> y construyo sistemas que funcionan. <em class="text-brand-beige/60">(Eventualmente).</em>',
         hero_cta_primary: "Hablemos →",
@@ -494,6 +552,18 @@
         exp_5_company: "Comunidad de Propietarios",
         exp_5_date: "2021 — 2023 · Concepción, CL",
         exp_5_body: 'Reportería financiera mensual en Excel, seguimiento de presupuestos y estrategia de cobranza — deuda reducida un <em>30%</em>. Mi primer contacto con eso de <em>convertir planillas caóticas en decisiones</em>.',
+
+        edu_kicker: "Estudios",
+        edu_title: 'La base <em class="not-italic text-brand-blue">académica</em>.',
+        edu_1_degree: "Máster en Business Analytics &amp; IA",
+        edu_1_institution: "INESDI TechSchool",
+        edu_1_date: "Oct 2025 — Jul 2026 · Madrid, ES · En curso",
+        edu_2_degree: "Diplomado en Ciencia de Datos &amp; Big Data",
+        edu_2_institution: "Universidad de los Andes",
+        edu_2_date: "Ago 2023 — Ago 2024 · Santiago, CL",
+        edu_3_degree: "Ingeniería Civil Industrial",
+        edu_3_institution: "Universidad del Desarrollo",
+        edu_3_date: "Mar 2018 — Feb 2024 · Concepción, CL",
 
         proj_kicker: "Proyectos",
         proj_title: "Lo que viene.",
