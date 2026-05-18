@@ -3,9 +3,16 @@
 <head>
   <meta charset="utf-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1" />
-  <title>CG — Software Engineer</title>
-  <meta name="description" content="Catalina Guzmán — Software Engineer. I build software for people who are tired of doing things manually." />
-  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23185FA5'/><text x='50' y='66' font-size='44' font-family='Inter,sans-serif' font-weight='700' text-anchor='middle' fill='%23FAEEDA'>CG</text><circle cx='76' cy='72' r='4' fill='%23FAEEDA'/></svg>" />
+  <title>Catalina Guzmán — Software Engineer | Spain</title>
+  <meta name="description" content="Catalina Guzmán — Software Engineer based in Spain. I build software that automates manual processes — Python, SQL, APIs, AI. Available for freelance." />
+  <meta property="og:title" content="Catalina Guzmán — Software Engineer" />
+  <meta property="og:description" content="I build software for people who are tired of doing things manually. Based in Spain, working globally." />
+  <meta property="og:image" content="https://cataguzmang.github.io/yo_git.png" />
+  <meta property="og:url" content="https://cataguzmang.github.io" />
+  <meta property="og:type" content="website" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <link rel="canonical" href="https://cataguzmang.github.io" />
+  <link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><rect width='100' height='100' rx='22' fill='%23185FA5'/><text x='50' y='66' font-size='44' font-family='system-ui,sans-serif' font-weight='700' text-anchor='middle' fill='%23FAEEDA'>CG</text><circle cx='76' cy='72' r='4' fill='%23FAEEDA'/></svg>" />
 
   <script>
     // pre-paint theme init to avoid flash
@@ -27,7 +34,7 @@
           colors: {
             brand: { blue: '#185FA5', blue2: '#2B7BC9', beige: '#FAEEDA', ink: '#0B1220', cream: '#F5E9D4' }
           },
-          fontFamily: { sans: ['Inter', 'system-ui', 'sans-serif'] }
+          fontFamily: { sans: ['DM Sans', 'system-ui', 'sans-serif'] }
         }
       }
     };
@@ -35,10 +42,11 @@
 
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;500;600;700&family=DM+Sans:ital,opsz,wght@0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&display=swap" rel="stylesheet" />
 
   <style>
-    html, body { font-family: 'Inter', system-ui, sans-serif; }
+    html, body { font-family: 'DM Sans', system-ui, sans-serif; }
+    h1, h2, h3 { font-family: 'Space Grotesk', system-ui, sans-serif; }
     body { background: #FAEEDA; color: #0B1220; }
     .dark body { background: #0B1220; color: #F5E9D4; }
     .reveal { opacity: 0; transform: translateY(18px); transition: opacity .7s ease, transform .7s ease; }
@@ -116,15 +124,19 @@
         <h1 class="text-5xl md:text-7xl font-semibold tracking-tight leading-[1.05]">Catalina<br/>Guzmán<span class="text-brand-beige/60">.</span></h1>
         <p class="mt-6 text-lg md:text-xl text-brand-beige/85 max-w-lg leading-relaxed" data-i18n="hero_tagline">I build software for <em>people who are tired of doing things manually</em>.</p>
         <div class="mt-10 flex flex-wrap gap-3">
-          <a href="#contact"  class="inline-flex items-center gap-2 bg-brand-beige text-brand-blue font-medium px-5 py-3 rounded-full hover:bg-white transition" data-i18n="hero_cta_primary">Get in touch →</a>
+          <a href="#contact"  class="inline-flex items-center gap-2 bg-brand-beige text-brand-blue font-medium px-5 py-3 rounded-full hover:bg-white transition" data-i18n="hero_cta_primary">Let's work together →</a>
           <a href="#projects" class="inline-flex items-center gap-2 border border-brand-beige/40 text-brand-beige font-medium px-5 py-3 rounded-full hover:bg-white/10 transition" data-i18n="hero_cta_secondary">View projects</a>
         </div>
+        <p class="mt-3 text-xs text-brand-beige/55" data-i18n="hero_cta_note">Available for freelance</p>
       </div>
 
       <div class="flex justify-center md:justify-end reveal">
         <div class="relative">
           <div class="absolute -inset-4 rounded-full bg-brand-beige/10 blur-2xl"></div>
-          <img src="yo_git.png" alt="Catalina Guzmán" class="relative w-64 h-64 md:w-80 md:h-80 object-cover rounded-full ring-4 ring-brand-beige/30 shadow-2xl" />
+          <picture>
+            <source srcset="yo_git.webp" type="image/webp" />
+            <img src="yo_git.png" alt="Catalina Guzmán" width="320" height="320" loading="eager" class="relative w-64 h-64 md:w-80 md:h-80 object-cover rounded-full ring-4 ring-brand-beige/30 shadow-2xl" />
+          </picture>
         </div>
       </div>
     </div>
@@ -135,7 +147,7 @@
     <div class="max-w-5xl mx-auto px-6">
       <div class="reveal">
         <span class="text-xs uppercase tracking-widest text-brand-blue font-medium" data-i18n="about_kicker">About</span>
-        <h2 class="mt-2 text-3xl md:text-5xl font-semibold tracking-tight" data-i18n="about_title">Quiet systems, <em class="not-italic text-brand-blue">loud</em> results.</h2>
+        <h2 class="mt-2 text-3xl md:text-5xl font-semibold tracking-tight" data-i18n="about_title">Software that automates. Systems that <em class="not-italic text-brand-blue">last</em>.</h2>
         <p class="mt-8 text-base md:text-lg leading-relaxed max-w-3xl text-black/75 dark:text-brand-cream/80" data-i18n="about_body">
           I lead tech initiatives across multiple industries — designing data-driven systems that integrate AI, APIs, and automation to solve real operational problems. I'm obsessed with finding new ways to leverage AI <em>properly</em>, learning continuously, and turning <span class="italic">"we could automate that"</span> into <span class="italic">"we did automate that".</span>
         </p>
@@ -172,7 +184,7 @@
 
       <ol class="mt-14 relative border-l border-black/10 dark:border-white/15 space-y-10 ml-2">
 
-        <!-- GetUp — AI Systems Engineer (current) -->
+        <!-- GetUp — Software Engineer (current) -->
         <li class="pl-8 relative reveal">
           <span class="absolute -left-[7px] top-1.5 w-3 h-3 rounded-full bg-brand-blue ring-4 ring-brand-beige dark:ring-brand-ink"></span>
           <div class="flex flex-wrap items-baseline justify-between gap-x-4 gap-y-1">
@@ -180,9 +192,8 @@
             <span class="text-xs text-black/55 dark:text-brand-cream/55" data-i18n="exp_1_date">Mar 2026 — Present · Remote (NYC)</span>
           </div>
           <p class="mt-1 text-sm text-brand-blue font-medium" data-i18n="exp_1_company">GetUp Worldwide Imports</p>
-          <p class="mt-3 text-sm md:text-base text-black/70 dark:text-brand-cream/75 leading-relaxed max-w-2xl" data-i18n="exp_1_body">
-            Modular <em>AI automations</em> for B2B outreach and operations, integrating the <em>OpenAI</em>, <em>Apollo</em>, <em>Hunter</em>, <em>Google</em> and <em>Microsoft Graph</em> APIs into a single pipeline, with SQL behind the scenes and a visual interface so non-technical operators can run things themselves. Turning <em>"we could automate that"</em> into <em>"we did automate that".</em>
-          </p>
+          <p class="mt-3 text-sm md:text-base text-black/70 dark:text-brand-cream/75 leading-relaxed max-w-2xl" data-i18n="exp_1_body">Built modular automation systems for B2B outreach and operations — integrating the <em>OpenAI</em>, <em>Apollo</em>, <em>Hunter</em>, <em>Google</em> and <em>Microsoft Graph</em> APIs into a single pipeline, with SQL for persistence and a visual interface so non-technical operators can run workflows independently.</p>
+          <ul class="mt-2 flex flex-wrap gap-x-5 gap-y-1" data-i18n="exp_1_bullets"></ul>
         </li>
 
         <!-- GetUp — Data & Market Analyst -->
@@ -193,9 +204,8 @@
             <span class="text-xs text-black/55 dark:text-brand-cream/55" data-i18n="exp_2_date">Jun 2025 — Mar 2026 · Remote (NYC)</span>
           </div>
           <p class="mt-1 text-sm text-brand-blue font-medium" data-i18n="exp_2_company">GetUp Worldwide Imports</p>
-          <p class="mt-3 text-sm md:text-base text-black/70 dark:text-brand-cream/75 leading-relaxed max-w-2xl" data-i18n="exp_2_body">
-            Built a Python pipeline — extraction, cleaning and visualisation with <em>seaborn</em> + <em>matplotlib</em> — feeding market-study reports that shaped the <em>US market-entry strategy</em>. On the side, set up a lightweight CRM in Google Sheets connected to Looker Studio for traceability. Outcome: <em>30%</em> less manual time, <em>40%</em> more process traceability.
-          </p>
+          <p class="mt-3 text-sm md:text-base text-black/70 dark:text-brand-cream/75 leading-relaxed max-w-2xl" data-i18n="exp_2_body">Built a Python pipeline — extraction, cleaning and visualisation with <em>seaborn</em> + <em>matplotlib</em> — feeding market-study reports that shaped the <em>US market-entry strategy</em>. On the side, set up a lightweight CRM in Google Sheets connected to Looker Studio for traceability. Outcome: <em>30%</em> less manual time, <em>40%</em> more process traceability.</p>
+          <ul class="mt-2 flex flex-wrap gap-x-5 gap-y-1" data-i18n="exp_2_bullets"></ul>
         </li>
 
         <!-- Ballon Latam -->
@@ -206,9 +216,8 @@
             <span class="text-xs text-black/55 dark:text-brand-cream/55" data-i18n="exp_3_date">Feb — May 2025 · Santiago, CL</span>
           </div>
           <p class="mt-1 text-sm text-brand-blue font-medium" data-i18n="exp_3_company">Ballon Latam</p>
-          <p class="mt-2 text-sm text-black/70 dark:text-brand-cream/75 leading-relaxed max-w-2xl" data-i18n="exp_3_body">
-            Standardised fleet databases and built real-time tracking in Excel + Looker Studio. Cut validation time by <em>35%</em> and response times by <em>25%</em>.
-          </p>
+          <p class="mt-2 text-sm text-black/70 dark:text-brand-cream/75 leading-relaxed max-w-2xl" data-i18n="exp_3_body">Standardised fleet databases and built real-time tracking in Excel + Looker Studio. Cut validation time by <em>35%</em> and response times by <em>25%</em>.</p>
+          <ul class="mt-2 flex flex-wrap gap-x-5 gap-y-1" data-i18n="exp_3_bullets"></ul>
         </li>
 
         <!-- Pianura Center -->
@@ -219,9 +228,8 @@
             <span class="text-xs text-black/55 dark:text-brand-cream/55" data-i18n="exp_4_date">Aug — Dec 2023 · Concepción, CL</span>
           </div>
           <p class="mt-1 text-sm text-brand-blue font-medium" data-i18n="exp_4_company">Pianura Center</p>
-          <p class="mt-2 text-sm text-black/70 dark:text-brand-cream/75 leading-relaxed max-w-2xl" data-i18n="exp_4_body">
-            Designed an inventory control system and KPI dashboards in Power BI. Reduced product shrinkage by <em>15%</em> while improving operational traceability.
-          </p>
+          <p class="mt-2 text-sm text-black/70 dark:text-brand-cream/75 leading-relaxed max-w-2xl" data-i18n="exp_4_body">Designed an inventory control system and KPI dashboards in Power BI. Reduced product shrinkage by <em>15%</em> while improving operational traceability.</p>
+          <ul class="mt-2 flex flex-wrap gap-x-5 gap-y-1" data-i18n="exp_4_bullets"></ul>
         </li>
 
         <!-- Comunidad de Propietarios -->
@@ -232,9 +240,8 @@
             <span class="text-xs text-black/55 dark:text-brand-cream/55" data-i18n="exp_5_date">2021 — 2023 · Concepción, CL</span>
           </div>
           <p class="mt-1 text-sm text-brand-blue font-medium" data-i18n="exp_5_company">Comunidad de Propietarios</p>
-          <p class="mt-2 text-sm text-black/70 dark:text-brand-cream/75 leading-relaxed max-w-2xl" data-i18n="exp_5_body">
-            Monthly financial reporting in Excel, budget tracking and collection strategy — debt reduced by <em>30%</em>. My first taste of <em>turning messy spreadsheets into decisions</em>.
-          </p>
+          <p class="mt-2 text-sm text-black/70 dark:text-brand-cream/75 leading-relaxed max-w-2xl" data-i18n="exp_5_body">Monthly financial reporting in Excel, budget tracking and collection strategy — debt reduced by <em>30%</em>. My first taste of <em>turning messy spreadsheets into decisions</em>.</p>
+          <ul class="mt-2 flex flex-wrap gap-x-5 gap-y-1" data-i18n="exp_5_bullets"></ul>
         </li>
       </ol>
     </div>
@@ -345,14 +352,16 @@
 
       <div class="mt-14 space-y-8 reveal">
         <div>
-          <div class="text-sm font-semibold text-brand-blue mb-3" data-i18n="stack_core">Core</div>
+          <div class="text-sm font-semibold text-brand-blue" data-i18n="stack_core">Core</div>
+          <p class="text-xs text-black/45 dark:text-brand-cream/45 mt-0.5 mb-3" data-i18n="stack_core_sub">The foundation of every system I build</p>
           <div class="flex flex-wrap gap-2">
             <span class="chip px-4 py-2 rounded-full border border-black/10 dark:border-white/15 text-sm">Python</span>
             <span class="chip px-4 py-2 rounded-full border border-black/10 dark:border-white/15 text-sm">SQL</span>
           </div>
         </div>
         <div>
-          <div class="text-sm font-semibold text-brand-blue mb-3" data-i18n="stack_wa">AI, APIs &amp; Automation</div>
+          <div class="text-sm font-semibold text-brand-blue" data-i18n="stack_wa">AI, APIs &amp; Automation</div>
+          <p class="text-xs text-black/45 dark:text-brand-cream/45 mt-0.5 mb-3" data-i18n="stack_wa_sub">What I wire together to replace manual work</p>
           <div class="flex flex-wrap gap-2">
             <span class="chip px-4 py-2 rounded-full border border-black/10 dark:border-white/15 text-sm">OpenAI API</span>
             <span class="chip px-4 py-2 rounded-full border border-black/10 dark:border-white/15 text-sm">LangChain</span>
@@ -363,7 +372,8 @@
           </div>
         </div>
         <div>
-          <div class="text-sm font-semibold text-brand-blue mb-3" data-i18n="stack_da">Data &amp; Visualisation</div>
+          <div class="text-sm font-semibold text-brand-blue" data-i18n="stack_da">Data &amp; Visualisation</div>
+          <p class="text-xs text-black/45 dark:text-brand-cream/45 mt-0.5 mb-3" data-i18n="stack_da_sub">How I turn data into decisions</p>
           <div class="flex flex-wrap gap-2">
             <span class="chip px-4 py-2 rounded-full border border-black/10 dark:border-white/15 text-sm">Power BI</span>
             <span class="chip px-4 py-2 rounded-full border border-black/10 dark:border-white/15 text-sm">Looker Studio</span>
@@ -414,10 +424,19 @@
 
   <footer class="py-10 border-t border-black/5 dark:border-white/10">
     <div class="max-w-5xl mx-auto px-6 flex flex-wrap items-center justify-between gap-3 text-xs text-black/55 dark:text-brand-cream/55">
-      <span data-i18n="footer_left">Designed &amp; built by Catalina Guzmán · Spain · 2026</span>
-      <span data-i18n="footer_right">Catalina Guzmán — Software Engineer</span>
+      <span data-i18n="footer_left">© 2026 Catalina Guzmán</span>
+      <span class="flex gap-5">
+        <a href="mailto:caguzmang@outlook.com" class="hover:text-brand-blue transition">Email</a>
+        <a href="https://github.com/cataguzmang" target="_blank" rel="noopener" class="hover:text-brand-blue transition">GitHub</a>
+        <a href="https://linkedin.com/in/catalinaguzmang" target="_blank" rel="noopener" class="hover:text-brand-blue transition">LinkedIn</a>
+      </span>
     </div>
   </footer>
+
+  <!-- STICKY MOBILE CTA -->
+  <div id="sticky-cta" class="fixed bottom-0 left-0 right-0 z-40 md:hidden translate-y-full transition-transform duration-300 bg-brand-beige/95 dark:bg-brand-ink/95 backdrop-blur-md border-t border-black/10 dark:border-white/10 px-5 py-3">
+    <a href="#contact" class="block w-full text-center bg-brand-blue text-brand-beige font-semibold py-3 rounded-full hover:bg-brand-blue2 transition text-sm" data-i18n="sticky_cta">Let's work together →</a>
+  </div>
 
   <script>
     // ---------- i18n ----------
@@ -426,11 +445,12 @@
         nav_about: "About", nav_experience: "Experience", nav_education: "Education", nav_projects: "Projects", nav_stack: "Stack", nav_contact: "Contact",
         hero_eyebrow: "Software Engineer · Spain",
         hero_tagline: 'I build software for <em>people who are tired of doing things manually</em>.',
-        hero_cta_primary: "Get in touch →",
+        hero_cta_primary: "Let's work together →",
         hero_cta_secondary: "View projects",
+        hero_cta_note: "Available for freelance",
 
         about_kicker: "About",
-        about_title: 'Quiet systems, <em class="not-italic text-brand-blue">loud</em> results.',
+        about_title: 'Software that automates. Systems that <em class="not-italic text-brand-blue">last</em>.',
         about_body: 'I lead tech initiatives across multiple industries — designing data-driven systems that integrate AI, APIs and automation to solve <em>real</em> operational problems. I\'m obsessed with finding new ways to leverage AI <em>properly</em>, learning continuously, and turning <em>"we could automate that"</em> into <em>"we did automate that".</em>',
         howiwork_1_title: "Build fast, iterate faster",
         howiwork_1_body: "Explore ideas in parallel, prioritise ruthlessly, validate with data.",
@@ -448,26 +468,31 @@
         exp_1_company: "GetUp Worldwide Imports",
         exp_1_date: "Mar 2026 — Present · Remote (NYC)",
         exp_1_body: 'Built modular automation systems for B2B outreach and operations — integrating the <em>OpenAI</em>, <em>Apollo</em>, <em>Hunter</em>, <em>Google</em> and <em>Microsoft Graph</em> APIs into a single pipeline, with SQL for persistence and a visual interface so non-technical operators can run workflows independently.',
+        exp_1_bullets: '<li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>5 APIs in one pipeline</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>End-to-end B2B outreach automated</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>Visual interface for non-tech operators</li>',
 
         exp_2_role: "Market & Data Analyst",
         exp_2_company: "GetUp Worldwide Imports",
         exp_2_date: "Jun 2025 — Mar 2026 · Remote (NYC)",
         exp_2_body: 'Built a Python pipeline — extraction, cleaning and visualisation with <em>seaborn</em> + <em>matplotlib</em> — feeding market-study reports that shaped the <em>US market-entry strategy</em>. On the side, set up a lightweight CRM in Google Sheets connected to Looker Studio for traceability. Outcome: <em>30%</em> less manual time, <em>40%</em> more process traceability.',
+        exp_2_bullets: '<li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>30% less manual processing time</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>40% more process traceability</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>Lightweight CRM in Sheets + Looker Studio</li>',
 
         exp_3_role: "Operations & Process Analyst",
         exp_3_company: "Ballon Latam",
         exp_3_date: "Feb — May 2025 · Santiago, CL",
         exp_3_body: 'Standardised fleet databases and built real-time tracking in Excel + Looker Studio. Cut validation time by <em>35%</em> and response times by <em>25%</em>.',
+        exp_3_bullets: '<li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>35% faster validation times</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>25% faster response times</li>',
 
         exp_4_role: "Operations & Controlling",
         exp_4_company: "Pianura Center",
         exp_4_date: "Aug — Dec 2023 · Concepción, CL",
         exp_4_body: 'Designed an inventory control system and KPI dashboards in Power BI. Reduced product shrinkage by <em>15%</em> while improving operational traceability.',
+        exp_4_bullets: '<li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>15% less product shrinkage</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>KPI dashboards in Power BI</li>',
 
         exp_5_role: "Admin & Financial Reporting",
         exp_5_company: "Comunidad de Propietarios",
         exp_5_date: "2021 — 2023 · Concepción, CL",
         exp_5_body: 'Monthly financial reporting in Excel, budget tracking and collection strategy — debt reduced by <em>30%</em>. My first taste of <em>turning messy spreadsheets into decisions</em>.',
+        exp_5_bullets: '<li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>30% reduction in outstanding debt</li>',
 
         edu_kicker: "Education",
         edu_title: 'The academic <em class="not-italic text-brand-blue">foundation</em>.',
@@ -494,17 +519,20 @@
         stack_kicker: "Stack",
         stack_title: "Tools I reach for.",
         stack_core: "Core",
+        stack_core_sub: "The foundation of every system I build",
         stack_wa: "AI, APIs & Automation",
+        stack_wa_sub: "What I wire together to replace manual work",
         stack_da: "Data & Visualisation",
+        stack_da_sub: "How I turn data into decisions",
 
         contact_kicker: "Contact",
         contact_title: "Let's connect.",
-        contact_body: "Open to roles in AI systems, automation and data engineering — and to <em>interesting</em> side-projects.",
+        contact_body: "Open to freelance work in software engineering, automation and data — and to <em>interesting</em> side-projects.",
         contact_email_label: "Email",
         contact_copy: "Copy",
 
-        footer_left: "Designed &amp; built by Catalina Guzmán · Spain · 2026",
-        footer_right: "Catalina Guzmán — Software Engineer",
+        sticky_cta: "Let's work together →",
+        footer_left: "© 2026 Catalina Guzmán",
       },
       es: {
         nav_about: "Sobre mí", nav_experience: "Experiencia", nav_education: "Estudios", nav_projects: "Proyectos", nav_stack: "Stack", nav_contact: "Contacto",
@@ -512,9 +540,10 @@
         hero_tagline: 'Construyo software para <em>personas que están hartas de hacer las cosas a mano</em>.',
         hero_cta_primary: "Hablemos →",
         hero_cta_secondary: "Ver proyectos",
+        hero_cta_note: "Disponible para proyectos freelance",
 
         about_kicker: "Sobre mí",
-        about_title: 'Sistemas silenciosos, resultados <em class="not-italic text-brand-blue">ruidosos</em>.',
+        about_title: 'Software que automatiza. Sistemas que <em class="not-italic text-brand-blue">duran</em>.',
         about_body: 'Lidero iniciativas tecnológicas en distintas industrias — diseñando sistemas basados en datos que integran IA, APIs y automatización para resolver problemas operativos <em>reales</em>. Me obsesiona encontrar nuevas formas de aprovechar la IA <em>bien</em>, aprender de forma continua y convertir el <em>"esto se podría automatizar"</em> en un <em>"esto ya está automatizado".</em>',
         howiwork_1_title: "Construir rápido, iterar más rápido",
         howiwork_1_body: "Explorar ideas en paralelo, priorizar sin piedad, validar con datos.",
@@ -532,26 +561,31 @@
         exp_1_company: "GetUp Worldwide Imports",
         exp_1_date: "Mar 2026 — Actualidad · Remoto (NYC)",
         exp_1_body: 'Desarrollé sistemas de automatización modulares para outreach B2B y operaciones — integrando las APIs de <em>OpenAI</em>, <em>Apollo</em>, <em>Hunter</em>, <em>Google</em> y <em>Microsoft Graph</em> en un mismo pipeline, con SQL para persistencia y una interfaz visual para que operadores no técnicos puedan ejecutar los flujos de forma autónoma.',
+        exp_1_bullets: '<li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>5 APIs en un solo pipeline</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>Outreach B2B automatizado de punta a punta</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>Interfaz visual para operadores no técnicos</li>',
 
         exp_2_role: "Market & Data Analyst",
         exp_2_company: "GetUp Worldwide Imports",
         exp_2_date: "Jun 2025 — Mar 2026 · Remoto (NYC)",
         exp_2_body: 'Construí un pipeline en Python —extracción, limpieza y visualización con <em>seaborn</em> + <em>matplotlib</em>— que alimentaba informes de estudio de mercado para definir la <em>estrategia de entrada a EE.UU.</em> En paralelo, monté un CRM ligero en Google Sheets conectado a Looker Studio para trazabilidad. Resultado: <em>30%</em> menos tiempo manual y <em>40%</em> más trazabilidad en los procesos.',
+        exp_2_bullets: '<li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>30% menos tiempo manual</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>40% más trazabilidad en procesos</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>CRM ligero en Sheets + Looker Studio</li>',
 
         exp_3_role: "Analista de Operaciones y Procesos",
         exp_3_company: "Ballon Latam",
         exp_3_date: "Feb — May 2025 · Santiago, CL",
         exp_3_body: 'Estandaricé bases de datos de flotas y construí seguimiento en tiempo real en Excel + Looker Studio. Reduje el tiempo de validación un <em>35%</em> y los tiempos de respuesta un <em>25%</em>.',
+        exp_3_bullets: '<li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>35% menos tiempo de validación</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>25% menos tiempo de respuesta</li>',
 
         exp_4_role: "Operaciones y Control",
         exp_4_company: "Pianura Center",
         exp_4_date: "Ago — Dic 2023 · Concepción, CL",
         exp_4_body: 'Diseñé un sistema de control de inventario y dashboards de KPIs en Power BI. Reduje la merma de productos un <em>15%</em> y mejoré la trazabilidad operativa.',
+        exp_4_bullets: '<li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>15% menos merma de productos</li><li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>Dashboards de KPIs en Power BI</li>',
 
         exp_5_role: "Administración y Reportería Financiera",
         exp_5_company: "Comunidad de Propietarios",
         exp_5_date: "2021 — 2023 · Concepción, CL",
         exp_5_body: 'Reportería financiera mensual en Excel, seguimiento de presupuestos y estrategia de cobranza — deuda reducida un <em>30%</em>. Mi primer contacto con eso de <em>convertir planillas caóticas en decisiones</em>.',
+        exp_5_bullets: '<li class="text-xs text-black/50 dark:text-brand-cream/50 flex items-center gap-1.5"><span class="text-brand-blue">·</span>30% de reducción en deuda pendiente</li>',
 
         edu_kicker: "Estudios",
         edu_title: 'La base <em class="not-italic text-brand-blue">académica</em>.',
@@ -578,17 +612,20 @@
         stack_kicker: "Stack",
         stack_title: "Mis herramientas.",
         stack_core: "Core",
+        stack_core_sub: "La base de cada sistema que construyo",
         stack_wa: "IA, APIs y automatización",
+        stack_wa_sub: "Lo que conecto para eliminar trabajo manual",
         stack_da: "Datos y visualización",
+        stack_da_sub: "Cómo convierto datos en decisiones",
 
         contact_kicker: "Contacto",
         contact_title: "Hablemos.",
-        contact_body: "Abierta a roles en sistemas de IA, automatización e ingeniería de datos — y a side-projects <em>interesantes</em>.",
+        contact_body: "Abierta a trabajo freelance en ingeniería de software, automatización y datos — y a side-projects <em>interesantes</em>.",
         contact_email_label: "Email",
         contact_copy: "Copiar",
 
-        footer_left: "Diseñado y desarrollado por Catalina Guzmán · España · 2026",
-        footer_right: "Catalina Guzmán — Software Engineer",
+        sticky_cta: "Hablemos →",
+        footer_left: "© 2026 Catalina Guzmán",
       }
     };
 
@@ -632,6 +669,13 @@
         setTimeout(() => { btn.textContent = original; }, 1600);
       } catch {}
     });
+
+    // ---------- sticky mobile CTA ----------
+    const stickyCta = document.getElementById('sticky-cta');
+    const heroSection = document.getElementById('top');
+    window.addEventListener('scroll', () => {
+      stickyCta.classList.toggle('translate-y-full', window.scrollY < heroSection.offsetHeight);
+    }, { passive: true });
 
     // ---------- reveal on scroll ----------
     const io = new IntersectionObserver((entries) => {
