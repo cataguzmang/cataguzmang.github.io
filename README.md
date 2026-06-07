@@ -1,48 +1,48 @@
 # cataguzmang.github.io
 
-Personal portfolio for **Catalina Guzmán** — Software Engineer.
+This is my personal portfolio. I'm **Catalina Guzmán**, a Software Engineer who builds software for *people who are tired of doing things manually*.
 
-🔗 Live: **[cataguzmang.github.io](https://cataguzmang.github.io)**
+🔗 Live at **[cataguzmang.github.io](https://cataguzmang.github.io)**
 
-A one-page site covering background, experience, education, projects, stack and contact. Bilingual (EN/ES), dark by default, responsive.
+I built it as a single-page site to walk through my background, experience, education, projects, stack and how to reach me. It's bilingual (EN/ES), dark by default and responsive.
 
-## Built with
+## How I built it
 
 - HTML + [Tailwind CSS](https://tailwindcss.com/) via CDN
-- Vanilla JavaScript (no framework, no build step)
+- Vanilla JavaScript — no framework, no build step
 - Hosted on GitHub Pages
 
-The whole site lives in a single `index.html` — easy to read, easy to fork.
+I kept everything in a single `index.html` on purpose — easy to read, easy to tweak.
 
-## Features
+## What it does
 
-- Bilingual EN/ES with one-click toggle, persisted in `localStorage`
-- Dark mode by default with manual override
+- Bilingual EN/ES with a one-click toggle, saved in `localStorage`
+- Dark mode by default, with manual override
 - Fade-in on scroll via `IntersectionObserver`
-- Sticky navbar with blur, smooth scroll, hover micro-interactions
-- Mobile-first, fully responsive
+- Sticky navbar with blur, smooth scroll and hover micro-interactions
+- Mobile-first and fully responsive
 
-## Run locally
+## Running it locally
 
 ```bash
 # from the project folder
 python -m http.server 8080
-# open http://localhost:8080
+# then open http://localhost:8080
 ```
 
-Or just open `index.html` in a browser.
+Or I just open `index.html` in a browser.
 
-## Project structure
+## What's in here
 
 ```
 .
-├── index.html      # the entire landing page (HTML + Tailwind + JS)
+├── index.html      # the whole landing page (HTML + Tailwind + JS)
 ├── yo_git.webp     # hero avatar (WebP, primary)
 ├── yo_git.png      # hero avatar (PNG fallback)
 └── README.md
 ```
 
-## Get in touch
+## Say hi
 
 - **Email:** caguzmang@outlook.com
 - **LinkedIn:** [in/catalinaguzmang](https://linkedin.com/in/catalinaguzmang)
