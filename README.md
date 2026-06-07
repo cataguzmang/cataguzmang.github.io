@@ -1,10 +1,10 @@
 # cataguzmang.github.io
 
-Personal portfolio for **Catalina Guzmán** — AI Systems Engineer.
+Personal portfolio for **Catalina Guzmán** — Software Engineer.
 
 🔗 Live: **[cataguzmang.github.io](https://cataguzmang.github.io)**
 
-A one-page site covering background, experience, projects, stack and contact. Bilingual (EN/ES), dark by default, responsive.
+A one-page site covering background, experience, education, projects, stack and contact. Bilingual (EN/ES), dark by default, responsive.
 
 ## Built with
 
@@ -37,7 +37,8 @@ Or just open `index.html` in a browser.
 ```
 .
 ├── index.html      # the entire landing page (HTML + Tailwind + JS)
-├── yo_git.png      # hero avatar
+├── yo_git.webp     # hero avatar (WebP, primary)
+├── yo_git.png      # hero avatar (PNG fallback)
 └── README.md
 ```
 
